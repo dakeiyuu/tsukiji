@@ -1,7 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#008577</color>
-    <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#D81B60</color>
+    <!-- Tsukiji Brand Colors -->
+    <color name="tsukiji_orange">#F5732A</color>
+    <color name="tsukiji_orange_dark">#E8621A</color>
+    <color name="tsukiji_orange_light">#FF9A00</color>
+    <color name="tsukiji_cyan">#00B4D8</color>
+    <color name="tsukiji_cyan_dark">#0096C7</color>
+    <color name="tsukiji_dark">#2D3436</color>
+
+    <!-- Legacy / Theme colors -->
+    <color name="colorPrimary">#F5732A</color>
+    <color name="colorPrimaryDark">#E8621A</color>
+    <color name="colorAccent">#00B4D8</color>
     <color name="background">#FAFAFA</color>
 </resources>

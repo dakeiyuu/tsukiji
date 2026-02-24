@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_container"
@@ -7,7 +8,9 @@
     android:layout_height="match_parent"
     tools:context="com.google.maps.android.ktx.demo.MainActivity">
 
-    <!-- Contenedor del mapa -->
+    <!-- ═══════════════════════════════════════════
+         CONTENEDOR PRINCIPAL DEL MAPA
+    ═══════════════════════════════════════════ -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/map_container"
         android:layout_width="0dp"
@@ -17,7 +20,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <!-- Mapa en el fondo -->
+        <!-- MAPA de fondo -->
         <fragment
             android:id="@+id/map"
             class="com.google.android.gms.maps.SupportMapFragment"
@@ -28,78 +31,136 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <!-- Card flotante superior -->
+        <!-- ══════════════════════════════════════
+             CARD SUPERIOR — "¿Qué negocio quieres crear hoy?"
+        ══════════════════════════════════════ -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/top_card"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            app:cardElevation="8dp"
-            app:cardCornerRadius="16dp"
-            app:cardBackgroundColor="@android:color/white"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="16dp"
+            app:cardElevation="12dp"
+            app:cardCornerRadius="24dp"
+            app:cardBackgroundColor="@android:color/transparent"
+            app:strokeWidth="0dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
+            <!-- Fondo degradado naranja Tsukiji -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
+                android:background="@drawable/bg_top_card"
                 android:padding="20dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <!-- Fila superior: ícono pin + título -->
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="¿Qué negocio quieres crear hoy?"
-                    android:textStyle="bold"
-                    android:textSize="18sp"
-                    android:textColor="#2C3E50"
-                    android:layout_marginBottom="16dp" />
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="14dp">
 
+                    <!-- Ícono de ubicación con fondo semi-transparente -->
+                    <FrameLayout
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:background="@drawable/bg_icon_circle"
+                        android:layout_marginEnd="12dp">
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@android:drawable/ic_menu_mylocation"
+                            android:tint="#FFFFFF"
+                            android:layout_gravity="center" />
+                    </FrameLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="TSUKIJI MAPS"
+                            android:textColor="#FFFDE7"
+                            android:textSize="10sp"
+                            android:textStyle="bold"
+                            android:letterSpacing="0.2" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="¿Qué negocio quieres crear hoy?"
+                            android:textStyle="bold"
+                            android:textSize="16sp"
+                            android:textColor="#FFFFFF" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <!-- Chips de categoría de negocio -->
                 <HorizontalScrollView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:scrollbars="none">
+                    android:scrollbars="none"
+                    android:layout_marginBottom="14dp">
 
                     <com.google.android.material.chip.ChipGroup
                         android:id="@+id/chip_group_new_business"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:chipSpacing="8dp"
+                        app:chipSpacing="6dp"
                         app:singleSelection="true"
                         app:selectionRequired="false" />
 
                 </HorizontalScrollView>
 
+                <!-- Botón "Encontrar mejor ubicación" — cyan Tsukiji -->
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_find_location"
                     android:layout_width="match_parent"
-                    android:layout_height="56dp"
+                    android:layout_height="52dp"
                     android:text="Encontrar mejor ubicación"
                     android:textAllCaps="false"
-                    android:textSize="16sp"
+                    android:textSize="15sp"
                     android:textStyle="bold"
-                    android:layout_marginTop="16dp"
-                    app:backgroundTint="#FF6B35"
+                    android:textColor="#FFFFFF"
+                    android:letterSpacing="0.02"
+                    app:backgroundTint="#00B4D8"
                     app:icon="@android:drawable/ic_menu_mylocation"
                     app:iconGravity="start"
-                    app:iconTint="@android:color/white"
-                    app:cornerRadius="12dp" />
+                    app:iconTint="#FFFFFF"
+                    app:iconPadding="8dp"
+                    app:cornerRadius="14dp"
+                    app:elevation="4dp" />
 
             </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Card de filtros (colapsable) -->
+        <!-- ══════════════════════════════════════
+             CARD DE FILTROS (colapsable)
+        ══════════════════════════════════════ -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/filter_card"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="8dp"
             android:visibility="gone"
-            app:cardElevation="6dp"
-            app:cardCornerRadius="12dp"
-            app:cardBackgroundColor="@android:color/white"
+            app:cardElevation="8dp"
+            app:cardCornerRadius="20dp"
+            app:cardBackgroundColor="@android:color/transparent"
+            app:strokeWidth="0dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/top_card">
@@ -108,16 +169,36 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:background="@drawable/bg_filter_card"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:paddingTop="14dp"
+                android:paddingBottom="14dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <!-- Header del filtro -->
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Filtrar por categoría:"
-                    android:textStyle="bold"
-                    android:textSize="14sp"
-                    android:textColor="#2C3E50"
-                    android:layout_marginBottom="12dp" />
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="10dp">
+
+                    <View
+                        android:layout_width="3dp"
+                        android:layout_height="16dp"
+                        android:background="#F5732A"
+                        android:layout_marginEnd="8dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Filtrar por categoría"
+                        android:textStyle="bold"
+                        android:textSize="13sp"
+                        android:textColor="#2D3436"
+                        android:letterSpacing="0.02" />
+
+                </LinearLayout>
 
                 <HorizontalScrollView
                     android:layout_width="match_parent"
@@ -128,7 +209,7 @@
                         android:id="@+id/chip_group_filters"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:chipSpacing="8dp"
+                        app:chipSpacing="6dp"
                         app:singleSelection="true"
                         app:selectionRequired="true" />
 
@@ -138,28 +219,37 @@
 
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Botón flotante para mostrar/ocultar filtros -->
+        <!-- ══════════════════════════════════════
+             FAB — mostrar/ocultar filtros
+        ══════════════════════════════════════ -->
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab_filters"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="12dp"
             android:src="@android:drawable/ic_menu_sort_by_size"
-            app:backgroundTint="#FF6B35"
-            app:tint="@android:color/white"
+            app:backgroundTint="#F5732A"
+            app:tint="#FFFFFF"
             app:fabSize="normal"
+            app:borderWidth="0dp"
+            app:elevation="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/legend_card" />
 
-        <!-- Leyenda del mapa de calor -->
+        <!-- ══════════════════════════════════════
+             LEYENDA DEL MAPA DE CALOR
+        ══════════════════════════════════════ -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/legend_card"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            app:cardElevation="4dp"
-            app:cardCornerRadius="12dp"
-            app:cardBackgroundColor="#F8F9FA"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            app:cardElevation="8dp"
+            app:cardCornerRadius="16dp"
+            app:cardBackgroundColor="@android:color/transparent"
+            app:strokeWidth="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 
@@ -167,102 +257,114 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="12dp">
+                android:background="@drawable/bg_legend_card"
+                android:paddingStart="12dp"
+                android:paddingEnd="14dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Densidad"
-                    android:textStyle="bold"
-                    android:textSize="11sp"
-                    android:textColor="#2C3E50"
-                    android:layout_marginBottom="6dp" />
-
+                <!-- Título leyenda con acento naranja -->
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
-                    android:layout_marginBottom="3dp">
+                    android:layout_marginBottom="8dp">
 
                     <View
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
-                        android:background="#00FF00"
+                        android:layout_width="3dp"
+                        android:layout_height="12dp"
+                        android:background="#F5732A"
                         android:layout_marginEnd="6dp" />
 
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Densidad"
+                        android:textStyle="bold"
+                        android:textSize="11sp"
+                        android:textColor="#2D3436"
+                        android:letterSpacing="0.05" />
+
+                </LinearLayout>
+
+                <!-- Baja -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="5dp">
+                    <View
+                        android:layout_width="12dp"
+                        android:layout_height="12dp"
+                        android:background="@drawable/bg_dot_baja"
+                        android:layout_marginEnd="7dp" />
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Baja"
                         android:textSize="10sp"
                         android:textColor="#5A6C7D" />
-
                 </LinearLayout>
 
+                <!-- Media -->
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
-                    android:layout_marginBottom="3dp">
-
+                    android:layout_marginBottom="5dp">
                     <View
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
-                        android:background="#FFFF00"
-                        android:layout_marginEnd="6dp" />
-
+                        android:layout_width="12dp"
+                        android:layout_height="12dp"
+                        android:background="@drawable/bg_dot_media"
+                        android:layout_marginEnd="7dp" />
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Media"
                         android:textSize="10sp"
                         android:textColor="#5A6C7D" />
-
                 </LinearLayout>
 
+                <!-- Alta -->
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
-                    android:layout_marginBottom="3dp">
-
+                    android:layout_marginBottom="5dp">
                     <View
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
-                        android:background="#FFA500"
-                        android:layout_marginEnd="6dp" />
-
+                        android:layout_width="12dp"
+                        android:layout_height="12dp"
+                        android:background="@drawable/bg_dot_alta"
+                        android:layout_marginEnd="7dp" />
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Alta"
                         android:textSize="10sp"
                         android:textColor="#5A6C7D" />
-
                 </LinearLayout>
 
+                <!-- Muy Alta -->
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:gravity="center_vertical">
-
                     <View
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
-                        android:background="#FF0000"
-                        android:layout_marginEnd="6dp" />
-
+                        android:layout_width="12dp"
+                        android:layout_height="12dp"
+                        android:background="@drawable/bg_dot_muy_alta"
+                        android:layout_marginEnd="7dp" />
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Muy Alta"
                         android:textSize="10sp"
                         android:textColor="#5A6C7D" />
-
                 </LinearLayout>
 
             </LinearLayout>
@@ -271,7 +373,9 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- Contenedor para fragmentos (Search, Saved, Profile) -->
+    <!-- ═══════════════════════════════════════════
+         CONTENEDOR DE FRAGMENTOS (Guardados, Propiedades)
+    ═══════════════════════════════════════════ -->
     <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="0dp"
@@ -282,12 +386,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Barra de navegación inferior -->
+    <!-- ═══════════════════════════════════════════
+         BARRA DE NAVEGACIÓN INFERIOR
+    ═══════════════════════════════════════════ -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@android:color/white"
+        android:background="@drawable/bg_bottom_nav"
         app:itemIconTint="@color/bottom_nav_color"
         app:itemTextColor="@color/bottom_nav_color"
         app:labelVisibilityMode="labeled"
