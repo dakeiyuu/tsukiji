@@ -1,19 +1,12 @@
 package com.google.maps.android.ktx.demo
 
-import android.app.Activity
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -23,8 +16,7 @@ data class PropiedadItem(
     val nombre: String,
     val direccion: String,
     val precio: String,
-    val tipo: String,
-    val fotos: List<Uri> = emptyList()
+    val tipo: String
 )
 
 class PropiedadesFragment : Fragment() {
@@ -39,29 +31,6 @@ class PropiedadesFragment : Fragment() {
 
     private lateinit var adapter: PropiedadAdapter
     private var currentFilter = "Todas"
-
-    private val fotosSeleccionadas = mutableListOf<Uri>()
-    private var slotFotoActual = 0
-
-    private var ivFotos = arrayOfNulls<ImageView>(4)
-    private var placeholders = arrayOfNulls<LinearLayout>(4)
-    private var btnRemoves = arrayOfNulls<ImageView>(4)
-    private var frameFotos = arrayOfNulls<FrameLayout>(4)
-
-    private val pickImage = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val uri = result.data?.data ?: return@registerForActivityResult
-            val index = slotFotoActual - 1
-            if (index < fotosSeleccionadas.size) {
-                fotosSeleccionadas[index] = uri
-            } else {
-                fotosSeleccionadas.add(uri)
-            }
-            mostrarFotoEnSlot(index, uri)
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -98,7 +67,9 @@ class PropiedadesFragment : Fragment() {
             override fun onTabReselected(tab: TabLayout.Tab?) {}
         })
 
-        btnAgregar.setOnClickListener { showAddPropertyDialog() }
+        btnAgregar.setOnClickListener {
+            showAddPropertyDialog()
+        }
     }
 
     private fun getFilteredList(): List<PropiedadItem> = when (currentFilter) {
@@ -108,8 +79,6 @@ class PropiedadesFragment : Fragment() {
     }
 
     private fun showAddPropertyDialog() {
-        fotosSeleccionadas.clear()
-
         val dialogView = LayoutInflater.from(requireContext())
             .inflate(R.layout.dialog_agregar_propiedad, null)
 
@@ -122,40 +91,6 @@ class PropiedadesFragment : Fragment() {
         val etDireccion = dialogView.findViewById<com.google.android.material.textfield.TextInputEditText>(R.id.et_direccion)
         val etPrecio = dialogView.findViewById<com.google.android.material.textfield.TextInputEditText>(R.id.et_precio)
         val btnPublicar = dialogView.findViewById<android.widget.Button>(R.id.btn_publicar)
-
-        ivFotos[0] = dialogView.findViewById(R.id.iv_foto_1)
-        ivFotos[1] = dialogView.findViewById(R.id.iv_foto_2)
-        ivFotos[2] = dialogView.findViewById(R.id.iv_foto_3)
-        ivFotos[3] = dialogView.findViewById(R.id.iv_foto_4)
-
-        placeholders[0] = dialogView.findViewById(R.id.placeholder_1)
-        placeholders[1] = dialogView.findViewById(R.id.placeholder_2)
-        placeholders[2] = dialogView.findViewById(R.id.placeholder_3)
-        placeholders[3] = dialogView.findViewById(R.id.placeholder_4)
-
-        btnRemoves[0] = dialogView.findViewById(R.id.btn_remove_1)
-        btnRemoves[1] = dialogView.findViewById(R.id.btn_remove_2)
-        btnRemoves[2] = dialogView.findViewById(R.id.btn_remove_3)
-        btnRemoves[3] = dialogView.findViewById(R.id.btn_remove_4)
-
-        frameFotos[0] = dialogView.findViewById(R.id.frame_foto_1)
-        frameFotos[1] = dialogView.findViewById(R.id.frame_foto_2)
-        frameFotos[2] = dialogView.findViewById(R.id.frame_foto_3)
-        frameFotos[3] = dialogView.findViewById(R.id.frame_foto_4)
-
-        for (i in 0..3) {
-            val slot = i + 1
-            frameFotos[i]?.setOnClickListener {
-                if (fotosSeleccionadas.size >= 4 && i >= fotosSeleccionadas.size) {
-                    Toast.makeText(requireContext(), "Máximo 4 fotos", Toast.LENGTH_SHORT).show()
-                } else if (i <= fotosSeleccionadas.size) {
-                    abrirGaleria(slot)
-                } else {
-                    Toast.makeText(requireContext(), "Agrega las fotos en orden", Toast.LENGTH_SHORT).show()
-                }
-            }
-            btnRemoves[i]?.setOnClickListener { eliminarFoto(i) }
-        }
 
         toggleGroup.check(R.id.btn_venta)
 
@@ -178,8 +113,7 @@ class PropiedadesFragment : Fragment() {
                 nombre = nombre,
                 direccion = direccion,
                 precio = "$$precio MXN${if (tipoSeleccionado == "Renta") "/mes" else ""}",
-                tipo = tipoSeleccionado,
-                fotos = fotosSeleccionadas.toList()
+                tipo = tipoSeleccionado
             )
 
             propiedades.add(index = 0, element = nuevaPropiedad)
@@ -189,34 +123,6 @@ class PropiedadesFragment : Fragment() {
         }
 
         dialog.show()
-    }
-
-    private fun abrirGaleria(slot: Int) {
-        slotFotoActual = slot
-        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-        pickImage.launch(intent)
-    }
-
-    private fun mostrarFotoEnSlot(index: Int, uri: Uri) {
-        ivFotos[index]?.setImageURI(uri)
-        ivFotos[index]?.visibility = View.VISIBLE
-        placeholders[index]?.visibility = View.GONE
-        btnRemoves[index]?.visibility = View.VISIBLE
-    }
-
-    private fun eliminarFoto(index: Int) {
-        if (index >= fotosSeleccionadas.size) return
-        fotosSeleccionadas.removeAt(index)
-        for (i in 0..3) {
-            if (i < fotosSeleccionadas.size) {
-                mostrarFotoEnSlot(i, fotosSeleccionadas[i])
-            } else {
-                ivFotos[i]?.setImageURI(null)
-                ivFotos[i]?.visibility = View.GONE
-                placeholders[i]?.visibility = View.VISIBLE
-                btnRemoves[i]?.visibility = View.GONE
-            }
-        }
     }
 
     inner class PropiedadAdapter(
