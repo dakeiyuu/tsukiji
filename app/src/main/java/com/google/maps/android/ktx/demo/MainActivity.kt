@@ -8,6 +8,7 @@ import android.widget.Toast
 import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
@@ -29,29 +30,38 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.maps.android.heatmaps.Gradient
 import com.google.maps.android.heatmaps.HeatmapTileProvider
+import com.google.maps.android.heatmaps.Gradient
 import com.google.maps.android.heatmaps.WeightedLatLng
 import com.google.maps.android.ktx.awaitMap
 import com.google.maps.android.ktx.awaitMapLoad
 import com.google.maps.android.ktx.cameraMoveStartedEvents
 import com.google.maps.android.ktx.cameraIdleEvents
 import com.google.maps.android.ktx.demo.model.MyItem
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlin.math.*
 
 class MainActivity : AppCompatActivity() {
 
     private var heatmapProvider: HeatmapTileProvider? = null
     private var allBusinessLocations = mutableListOf<LatLng>()
-    private var allBusinessItems = mutableListOf<MyItem>()
+    private var allBusinessItems     = mutableListOf<MyItem>()
     private var heatmapOverlay: TileOverlay? = null
     private var googleMap: GoogleMap? = null
-    private var suggestionMarkers = mutableListOf<Marker>()
+    private var suggestionMarkers    = mutableListOf<Marker>()
+    private var isHeatmapVisible     = false
 
-    // Categoría activa para refrescar el heatmap al cambiar zoom
-    private var currentCategory: String = "all"
+    // ── Urban-filter thresholds ──────────────────────────────────
+    /** Max km from any known business — beyond this = non-urban (sea, field, mountain) */
+    private val MAX_DIST_FROM_BUSINESS_KM = 1.5
+    /** Radius to count "nearby" businesses when judging urbanness */
+    private val URBAN_RADIUS_KM           = 2.0
+    /** Minimum businesses within URBAN_RADIUS_KM to be considered urban */
+    private val URBAN_MIN_COUNT           = 3
 
     private val businessCategories = mapOf(
         "all"           to "Todos",
@@ -68,61 +78,10 @@ class MainActivity : AppCompatActivity() {
         "entertainment" to "🎬 Entretenimiento"
     )
 
-    // ── Gradiente único por categoría ────────────────────────────────────────
-    private val categoryGradients: Map<String, Gradient> = mapOf(
-        "all" to Gradient(
-            intArrayOf(
-                Color.argb(0,   0, 255,   0),
-                Color.rgb(  0, 255,   0),
-                Color.rgb(255, 255,   0),
-                Color.rgb(255, 140,   0),
-                Color.rgb(220,  20,  60)
-            ),
-            floatArrayOf(0.0f, 0.20f, 0.50f, 0.75f, 1.0f)
-        ),
-        "restaurant" to Gradient(
-            intArrayOf(
-                Color.argb(0,  255, 100,   0),
-                Color.rgb(255, 160,  50),
-                Color.rgb(255, 100,   0),
-                Color.rgb(200,  30,   0)
-            ),
-            floatArrayOf(0.0f, 0.30f, 0.65f, 1.0f)
-        ),
-        "retail" to Gradient(
-            intArrayOf(
-                Color.argb(0,   30, 100, 255),
-                Color.rgb( 80, 160, 255),
-                Color.rgb( 30, 100, 255),
-                Color.rgb(  0,  40, 200)
-            ),
-            floatArrayOf(0.0f, 0.30f, 0.65f, 1.0f)
-        ),
-        "service" to Gradient(
-            intArrayOf(
-                Color.argb(0,    0, 180, 120),
-                Color.rgb( 60, 210, 150),
-                Color.rgb(  0, 180, 120),
-                Color.rgb(  0, 110,  70)
-            ),
-            floatArrayOf(0.0f, 0.30f, 0.65f, 1.0f)
-        ),
-        "entertainment" to Gradient(
-            intArrayOf(
-                Color.argb(0,  150,   0, 255),
-                Color.rgb(190,  80, 255),
-                Color.rgb(150,   0, 255),
-                Color.rgb( 90,   0, 180)
-            ),
-            floatArrayOf(0.0f, 0.30f, 0.65f, 1.0f)
-        )
-    )
-
     private lateinit var guardadosFragment: GuardadosFragment
     private lateinit var propiedadesFragment: PropiedadesFragment
 
-    // ── Lifecycle ─────────────────────────────────────────────────────────────
-
+    // ═════════════════════════════════════════════════════════════
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val isRestore = savedInstanceState != null
@@ -135,6 +94,7 @@ class MainActivity : AppCompatActivity() {
             setupFilterFab()
             if (BuildConfig.MAPS_API_KEY.isEmpty()) {
                 Toast.makeText(this, "Falta API key de Google Maps", Toast.LENGTH_LONG).show()
+                Log.e(TAG, "API Key vacía")
             }
         } catch (e: Exception) {
             Log.e(TAG, "Error en onCreate: ${e.message}", e)
@@ -142,11 +102,10 @@ class MainActivity : AppCompatActivity() {
             return
         }
 
-        val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as? SupportMapFragment
-            ?: run {
-                Toast.makeText(this, "Error: MapFragment no encontrado", Toast.LENGTH_LONG).show()
-                return
-            }
+        val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as? SupportMapFragment ?: run {
+            Toast.makeText(this, "Error: MapFragment no encontrado", Toast.LENGTH_LONG).show()
+            return
+        }
 
         lifecycleScope.launch {
             try {
@@ -161,172 +120,53 @@ class MainActivity : AppCompatActivity() {
 
                     googleMap?.let { map ->
                         if (allBusinessLocations.isNotEmpty()) {
-                            setupHeatmap(map, buildWeightedLocations(currentCategory))
-                            centerMapOnData(map)
-                            setupFilterChips(map)
+                            centerMapOnMonterrey(map)
+                            setupFilterChips()
                             setupNewBusinessChips()
                             setupFindLocationButton()
-                        } else {
-                            Toast.makeText(this@MainActivity, "No se pudieron cargar datos", Toast.LENGTH_LONG).show()
                         }
                     }
 
-                    // Refresca radio del heatmap al terminar de mover la cámara
-                    launch {
-                        googleMap?.cameraIdleEvents()?.collect {
-                            refreshHeatmapRadius()
-                        }
-                    }
-                    launch {
-                        googleMap?.cameraMoveStartedEvents()?.collect {
-                            Log.d(TAG, "Camera moved - reason $it")
-                        }
-                    }
+                    launch { googleMap?.cameraMoveStartedEvents()?.collect { } }
+                    launch { googleMap?.cameraIdleEvents()?.collect { } }
                 }
             } catch (e: Exception) {
-                Log.e(TAG, "Error inicializando mapa: ${e.message}", e)
-                Toast.makeText(this@MainActivity, "Error al cargar el mapa: ${e.message}", Toast.LENGTH_LONG).show()
+                Log.e(TAG, "Error mapa: ${e.message}", e)
+                Toast.makeText(this@MainActivity, "Error al cargar el mapa", Toast.LENGTH_LONG).show()
             }
         }
     }
 
-    // ── Heatmap ───────────────────────────────────────────────────────────────
-
-    /**
-     * Construye WeightedLatLng donde el peso refleja la densidad local del punto:
-     * más vecinos cercanos = mayor peso = mancha más intensa en esa zona.
-     */
-    private fun buildWeightedLocations(category: String): List<WeightedLatLng> {
-        val items = if (category == "all") allBusinessItems
-        else allBusinessItems.filter { it.category == category }
-        if (items.isEmpty()) return emptyList()
-
-        val radiusKm = 0.5  // 500 m de vecindario para calcular densidad
-        return items.map { item ->
-            val neighbors = items.count { other ->
-                other !== item && calculateDistance(item.position, other.position) <= radiusKm
-            }
-            // peso base 1.0 + bonus logarítmico por densidad (máx ≈ 5.0)
-            val weight = 1.0 + ln(1.0 + neighbors.toDouble())
-            WeightedLatLng(item.position, weight)
-        }
-    }
-
-    /**
-     * Crea o reemplaza el heatmap con gradiente propio de la categoría activa
-     * y radio ajustado al zoom actual.
-     */
-    private fun setupHeatmap(map: GoogleMap, weightedLocations: List<WeightedLatLng>) {
-        heatmapOverlay?.remove()
-        heatmapOverlay = null
-        if (weightedLocations.isEmpty()) return
-
-        try {
-            val gradient = categoryGradients[currentCategory] ?: categoryGradients["all"]!!
-            val radius   = zoomToRadius(map.cameraPosition.zoom)
-
-            val provider = HeatmapTileProvider.Builder()
-                .weightedData(weightedLocations)
-                .gradient(gradient)
-                .radius(radius)
-                .opacity(0.78)
-                .build()
-
-            heatmapProvider = provider
-            heatmapOverlay  = map.addTileOverlay(TileOverlayOptions().tileProvider(provider))
-        } catch (e: Exception) {
-            Log.e(TAG, "Error creando heatmap: ${e.message}", e)
-        }
-    }
-
-    /**
-     * Recalcula el radio en función del zoom y reconstruye el heatmap si cambió.
-     * Evita reconstrucciones innecesarias usando una banda de tolerancia de ±3 px.
-     */
-    private fun refreshHeatmapRadius() {
-        val map  = googleMap ?: return
-        val zoom = map.cameraPosition.zoom
-        val newRadius = zoomToRadius(zoom)
-
-        heatmapOverlay?.remove()
-        heatmapOverlay = null
-
-        try {
-            val weighted = buildWeightedLocations(currentCategory)
-            if (weighted.isEmpty()) return
-            val gradient = categoryGradients[currentCategory] ?: categoryGradients["all"]!!
-
-            val provider = HeatmapTileProvider.Builder()
-                .weightedData(weighted)
-                .gradient(gradient)
-                .radius(newRadius)
-                .opacity(0.78)
-                .build()
-
-            heatmapProvider = provider
-            heatmapOverlay  = map.addTileOverlay(TileOverlayOptions().tileProvider(provider))
-        } catch (e: Exception) {
-            Log.e(TAG, "Error refrescando heatmap: ${e.message}", e)
-        }
-    }
-
-    /**
-     * Convierte el nivel de zoom de Google Maps a un radio en píxeles para el heatmap.
-     * Zoom bajo → radio grande (manchas amplias a escala mundial).
-     * Zoom alto → radio pequeño (precisión a nivel de calle).
-     */
-    private fun zoomToRadius(zoom: Float): Int = when {
-        zoom < 3f  -> 50
-        zoom < 5f  -> 45
-        zoom < 7f  -> 40
-        zoom < 9f  -> 35
-        zoom < 11f -> 30
-        zoom < 13f -> 25
-        zoom < 15f -> 20
-        else       -> 15
-    }
-
-    // ── Filtros ───────────────────────────────────────────────────────────────
-
-    private fun filterBusinesses(map: GoogleMap, category: String) {
-        currentCategory = category
-        setupHeatmap(map, buildWeightedLocations(category))
-        val count = if (category == "all") allBusinessLocations.size
-        else allBusinessItems.count { it.category == category }
-        Toast.makeText(this, "Mostrando: $count negocios", Toast.LENGTH_SHORT).show()
-    }
-
-    // ── Fragmentos y navegación ───────────────────────────────────────────────
-
+    // ─────────────────────────────────────────────────────────────
+    //  NAVIGATION
+    // ─────────────────────────────────────────────────────────────
     private fun setupFragments() {
-        guardadosFragment   = GuardadosFragment()
+        guardadosFragment  = GuardadosFragment()
         propiedadesFragment = PropiedadesFragment()
     }
 
     private fun showFragment(fragment: Fragment) {
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container, fragment).commit()
+        supportFragmentManager.beginTransaction().replace(R.id.fragment_container, fragment).commit()
         findViewById<FrameLayout>(R.id.fragment_container).visibility = View.VISIBLE
-        findViewById<ConstraintLayout>(R.id.map_container).visibility = View.GONE
+        findViewById<ConstraintLayout>(R.id.map_container).visibility  = View.GONE
     }
 
     private fun showMap() {
         findViewById<FrameLayout>(R.id.fragment_container).visibility = View.GONE
-        findViewById<ConstraintLayout>(R.id.map_container).visibility = View.VISIBLE
+        findViewById<ConstraintLayout>(R.id.map_container).visibility  = View.VISIBLE
     }
 
     private fun setupFilterFab() {
         val fab        = findViewById<FloatingActionButton>(R.id.fab_filters)
-        val filterCard = findViewById<View>(R.id.filter_card)
+        val filterCard = findViewById<CardView>(R.id.filter_card)          // ← CardView, not MaterialCardView
         fab.setOnClickListener {
-            filterCard.visibility =
-                if (filterCard.visibility == View.VISIBLE) View.GONE else View.VISIBLE
+            filterCard.visibility = if (filterCard.visibility == View.VISIBLE) View.GONE else View.VISIBLE
         }
     }
 
     private fun setupBottomNavigation() {
-        val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_navigation)
         setupFragments()
+        val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_navigation)
         bottomNav.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_map         -> { showMap(); true }
@@ -338,8 +178,9 @@ class MainActivity : AppCompatActivity() {
         bottomNav.selectedItemId = R.id.nav_map
     }
 
-    // ── Guardar ubicaciones ───────────────────────────────────────────────────
-
+    // ─────────────────────────────────────────────────────────────
+    //  SAVE
+    // ─────────────────────────────────────────────────────────────
     fun saveCurrentLocation(title: String, category: String, score: Double) {
         googleMap?.cameraPosition?.target?.let { location ->
             guardadosFragment.addSavedLocation(
@@ -352,133 +193,192 @@ class MainActivity : AppCompatActivity() {
     private fun showSaveDialog(title: String, category: String, score: Double) {
         android.app.AlertDialog.Builder(this)
             .setTitle("Guardar ubicación")
-            .setMessage("¿Deseas guardar esta ubicación en tus favoritos?")
+            .setMessage("¿Deseas guardar esta ubicación?")
             .setPositiveButton("Guardar") { d, _ -> saveCurrentLocation(title, category, score); d.dismiss() }
             .setNegativeButton("Cancelar") { d, _ -> d.dismiss() }
             .show()
     }
 
-    // ── Chips ─────────────────────────────────────────────────────────────────
-
+    // ─────────────────────────────────────────────────────────────
+    //  CHIPS
+    // ─────────────────────────────────────────────────────────────
     private fun setupNewBusinessChips() {
         val chipGroup = findViewById<ChipGroup>(R.id.chip_group_new_business)
         newBusinessCategories.forEach { (key, label) ->
-            chipGroup.addView(buildChip(key, label, false))
-        }
-    }
-
-    private fun setupFilterChips(map: GoogleMap) {
-        val chipGroup = findViewById<ChipGroup>(R.id.chip_group_filters)
-        businessCategories.forEach { (key, label) ->
-            chipGroup.addView(buildChip(key, label, key == "all"))
-        }
-        chipGroup.setOnCheckedStateChangeListener { group, checkedIds ->
-            if (checkedIds.isEmpty()) { group.check(group.getChildAt(0).id); return@setOnCheckedStateChangeListener }
-            val category = group.findViewById<Chip>(checkedIds.first())?.tag as? String ?: "all"
-            filterBusinesses(map, category)
-        }
-    }
-
-    /** Crea un Chip con estilo blanco/borde naranja → naranja al seleccionar. */
-    private fun buildChip(key: String, label: String, startChecked: Boolean): Chip =
-        Chip(this).apply {
-            text       = label
-            isCheckable = true
-            isChecked  = startChecked
-            tag        = key
-            applyChipStyle(startChecked)
-            setOnCheckedChangeListener { _, checked -> applyChipStyle(checked) }
-        }
-
-    private fun Chip.applyChipStyle(checked: Boolean) {
-        if (checked) {
-            setChipBackgroundColorResource(android.R.color.holo_orange_light)
-            setTextColor(getColor(android.R.color.white))
-            chipStrokeWidth = 0f
-        } else {
-            setChipBackgroundColorResource(android.R.color.white)
-            setTextColor(getColor(android.R.color.darker_gray))
-            chipStrokeWidth = 2f
-            setChipStrokeColorResource(android.R.color.holo_orange_light)
+            chipGroup.addView(Chip(this).apply {
+                text            = label
+                isCheckable     = true
+                tag             = key
+                setChipBackgroundColorResource(android.R.color.white)
+                setTextColor(getColor(android.R.color.darker_gray))
+                chipStrokeWidth = 2f
+                chipStrokeColor = getColorStateList(android.R.color.darker_gray)
+                setOnCheckedChangeListener { _, checked ->
+                    if (checked) { setChipBackgroundColorResource(android.R.color.holo_orange_light); setTextColor(getColor(android.R.color.white)) }
+                    else         { setChipBackgroundColorResource(android.R.color.white); setTextColor(getColor(android.R.color.darker_gray)) }
+                }
+            })
         }
     }
 
     private fun setupFindLocationButton() {
-        val button    = findViewById<View>(R.id.btn_find_location)
+        val button    = findViewById<MaterialButton>(R.id.btn_find_location)
         val chipGroup = findViewById<ChipGroup>(R.id.chip_group_new_business)
         button.setOnClickListener {
             val id = chipGroup.checkedChipId
-            if (id == View.NO_ID) {
-                Toast.makeText(this, "Por favor selecciona un tipo de negocio", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
+            if (id == View.NO_ID) { Toast.makeText(this, "Selecciona un tipo de negocio", Toast.LENGTH_SHORT).show(); return@setOnClickListener }
             val category = chipGroup.findViewById<Chip>(id)?.tag as? String ?: return@setOnClickListener
             findBestLocations(category)
         }
     }
 
-    // ── Sugerencias de ubicación ──────────────────────────────────────────────
+    private fun setupFilterChips() {
+        val chipGroup = findViewById<ChipGroup>(R.id.chip_group_filters)
+        businessCategories.forEach { (key, label) ->
+            chipGroup.addView(Chip(this).apply {
+                text            = label
+                isCheckable     = true
+                isChecked       = key == "all"
+                tag             = key
+                setChipBackgroundColorResource(android.R.color.white)
+                setTextColor(getColor(android.R.color.darker_gray))
+                chipStrokeWidth = 2f
+                setOnCheckedChangeListener { _, checked ->
+                    if (checked) { setChipBackgroundColorResource(android.R.color.holo_orange_light); setTextColor(getColor(android.R.color.white)) }
+                    else         { setChipBackgroundColorResource(android.R.color.white); setTextColor(getColor(android.R.color.darker_gray)) }
+                }
+            })
+        }
+        chipGroup.setOnCheckedStateChangeListener { group, checkedIds ->
+            if (checkedIds.isEmpty()) { group.check(group.getChildAt(0).id); return@setOnCheckedStateChangeListener }
+            if (isHeatmapVisible) {
+                hideHeatmapAndMarkers()
+                Toast.makeText(this, "Pulsa 'Encontrar' para analizar la nueva categoría", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
 
+    // ─────────────────────────────────────────────────────────────
+    //  CORE: find best URBAN locations + show heatmap
+    // ─────────────────────────────────────────────────────────────
     private fun findBestLocations(category: String) {
         val map = googleMap ?: return
         suggestionMarkers.forEach { it.remove() }
         suggestionMarkers.clear()
         setupCustomInfoWindow(map)
 
+        Toast.makeText(this, "Analizando mejores ubicaciones en zonas urbanas…", Toast.LENGTH_SHORT).show()
+
         val bounds            = map.projection.visibleRegion.latLngBounds
         val visibleBusinesses = allBusinessItems.filter { bounds.contains(it.position) }
         val sameCategory      = visibleBusinesses.filter { it.category == category }
 
+        // Show heatmap for all locations of this category (global dataset)
+        showCategoryHeatmap(map, allBusinessItems.filter { it.category == category }.map { it.position })
+
         if (visibleBusinesses.isEmpty()) {
-            Toast.makeText(this, "No hay negocios en esta área. Mueve el mapa.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "No hay negocios visibles. Mueve el mapa a una ciudad.", Toast.LENGTH_LONG).show()
             return
         }
 
-        if (sameCategory.isEmpty()) {
-            val center = LatLng(
-                (bounds.northeast.latitude  + bounds.southwest.latitude)  / 2,
-                (bounds.northeast.longitude + bounds.southwest.longitude) / 2
-            )
-            val marker = map.addMarker(
-                MarkerOptions()
-                    .position(center)
-                    .title("TOCAME PARA GUARDARME\nUbicación Sugerida #1")
-                    .snippet("Excelente oportunidad: No hay competencia en esta área\nÍndice de oportunidad: 100.0")
-                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
-            )
-            marker?.tag = LocationSuggestion(center, 100.0, "Excelente oportunidad: No hay competencia")
-            marker?.let { suggestionMarkers.add(it) }
-            marker?.showInfoWindow()
-            map.setOnInfoWindowClickListener { m ->
-                (m.tag as? LocationSuggestion)?.let { showSaveDialog(m.title ?: "Ubicación", category, it.score) }
+        lifecycleScope.launch {
+            val bestLocations = withContext(Dispatchers.Default) {
+                findOptimalUrbanLocationsInBounds(bounds, sameCategory, visibleBusinesses)
             }
-            return
-        }
 
-        val bestLocations = findOptimalLocationsInBounds(bounds, sameCategory, visibleBusinesses)
-        if (bestLocations.isEmpty()) {
-            Toast.makeText(this, "No se encontraron ubicaciones óptimas", Toast.LENGTH_SHORT).show()
-            return
-        }
+            if (bestLocations.isEmpty()) {
+                Toast.makeText(this@MainActivity,
+                    "No se encontraron ubicaciones óptimas en zonas urbanas visibles.",
+                    Toast.LENGTH_LONG).show()
+                return@launch
+            }
 
-        bestLocations.take(5).forEachIndexed { index, loc ->
-            val marker = map.addMarker(
-                MarkerOptions()
-                    .position(loc.position)
-                    .title("TOCAME PARA GUARDARME\nUbicación Sugerida #${index + 1}")
-                    .snippet("${loc.reason}\nÍndice de oportunidad: ${String.format("%.1f", loc.score)}")
-                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE))
+            val noCompetition = sameCategory.isEmpty()
+
+            bestLocations.take(5).forEachIndexed { index, loc ->
+                val hue = if (index == 0 || noCompetition)
+                    BitmapDescriptorFactory.HUE_GREEN
+                else
+                    BitmapDescriptorFactory.HUE_ORANGE
+                val marker = map.addMarker(
+                    MarkerOptions()
+                        .position(loc.position)
+                        .title("TOCAME PARA GUARDARME\nUbicación Sugerida #${index + 1}")
+                        .snippet("${loc.reason}\nÍndice de oportunidad: ${String.format("%.1f", loc.score)}")
+                        .icon(BitmapDescriptorFactory.defaultMarker(hue))
+                )
+                marker?.tag = loc
+                marker?.let { suggestionMarkers.add(it) }
+            }
+
+            map.setOnInfoWindowClickListener { m ->
+                (m.tag as? LocationSuggestion)?.let { saveCurrentLocation(m.title ?: "Ubicación", category, it.score) }
+            }
+
+            map.animateCamera(CameraUpdateFactory.newLatLngZoom(bestLocations.first().position, 14f))
+            suggestionMarkers.firstOrNull()?.showInfoWindow()
+
+            val msg = if (noCompetition)
+                "¡Sin competencia! Se encontraron ${bestLocations.size} zonas urbanas óptimas."
+            else
+                "Se encontraron ${bestLocations.size} ubicaciones óptimas en zonas urbanas."
+            Toast.makeText(this@MainActivity, msg, Toast.LENGTH_LONG).show()
+        }
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    //  HEATMAP — smooth Gaussian blobs, semi-transparent, no squares
+    //
+    //  Key insight: WeightedLatLng lets us encode cluster density as
+    //  intensity. The HeatmapTileProvider then renders a smooth
+    //  Gaussian kernel around each point. Using DEFAULT_RADIUS (not 50)
+    //  avoids the blocky appearance that comes from very large radii.
+    // ─────────────────────────────────────────────────────────────
+    private fun showCategoryHeatmap(map: GoogleMap, locations: List<LatLng>) {
+        heatmapOverlay?.remove()
+        heatmapOverlay = null
+        if (locations.isEmpty()) { isHeatmapVisible = false; return }
+
+        try {
+            // Compute local density for each point (neighbours within 500 m)
+            val weighted = locations.map { loc ->
+                val neighbours = locations.count { other ->
+                    other !== loc && calculateDistance(loc, other) < 0.5
+                }
+                WeightedLatLng(loc, 1.0 + neighbours.toDouble())
+            }
+
+            // Gradient: fully transparent → green → yellow → orange → red
+            // Starting transparent ensures the "empty" areas of the tile are invisible
+            val colors = intArrayOf(
+                Color.argb(  0,   0, 180,   0),  // transparent (no data)
+                Color.argb(140,   0, 210,   0),  // 🟢 green  — baja densidad
+                Color.argb(170, 255, 220,   0),  // 🟡 yellow — media
+                Color.argb(200, 255, 120,   0),  // 🟠 orange — alta
+                Color.argb(230, 210,  20,  20)   // 🔴 red    — muy alta
             )
-            marker?.tag = loc
-            marker?.let { suggestionMarkers.add(it) }
-        }
+            val stops    = floatArrayOf(0.0f, 0.2f, 0.5f, 0.75f, 1.0f)
+            val gradient = Gradient(colors, stops)
 
-        map.setOnInfoWindowClickListener { m ->
-            (m.tag as? LocationSuggestion)?.let { saveCurrentLocation(m.title ?: "Ubicación", category, it.score) }
+            val provider = HeatmapTileProvider.Builder()
+                .weightedData(weighted)
+                .gradient(gradient)
+                // DEFAULT_RADIUS = 20 — keeps blobs smooth without pixel-square artefacts
+                .radius(HeatmapTileProvider.DEFAULT_RADIUS)
+                .opacity(0.72)   // semi-transparent so map labels show through
+                .build()
+
+            heatmapProvider  = provider
+            heatmapOverlay   = map.addTileOverlay(TileOverlayOptions().tileProvider(provider))
+            isHeatmapVisible = true
+        } catch (e: Exception) {
+            Log.e(TAG, "Error creating heatmap: ${e.message}", e)
         }
-        map.animateCamera(CameraUpdateFactory.newLatLngZoom(bestLocations.first().position, 13f))
-        suggestionMarkers.firstOrNull()?.showInfoWindow()
-        Toast.makeText(this, "Se encontraron ${bestLocations.size} ubicaciones óptimas.", Toast.LENGTH_LONG).show()
+    }
+
+    private fun hideHeatmapAndMarkers() {
+        heatmapOverlay?.remove(); heatmapOverlay = null; heatmapProvider = null; isHeatmapVisible = false
+        suggestionMarkers.forEach { it.remove() }; suggestionMarkers.clear()
     }
 
     private fun setupCustomInfoWindow(map: GoogleMap) {
@@ -493,81 +393,89 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-    private fun findOptimalLocationsInBounds(
+    // ─────────────────────────────────────────────────────────────
+    //  URBAN VALIDATION
+    //  A grid cell is "urban" only if it is near enough to known
+    //  businesses AND has a minimum cluster size around it.
+    //  This eliminates suggestions on mountains, rivers, sea, etc.
+    // ─────────────────────────────────────────────────────────────
+    private fun isUrbanCandidate(location: LatLng, allBusinesses: List<MyItem>): Boolean {
+        val nearest = allBusinesses.minOfOrNull { calculateDistance(location, it.position) } ?: return false
+        if (nearest > MAX_DIST_FROM_BUSINESS_KM) return false
+        val nearby = allBusinesses.count { calculateDistance(location, it.position) <= URBAN_RADIUS_KM }
+        return nearby >= URBAN_MIN_COUNT
+    }
+
+    private fun findOptimalUrbanLocationsInBounds(
         bounds: LatLngBounds,
         sameCategory: List<MyItem>,
         allBusinesses: List<MyItem>
     ): List<LocationSuggestion> {
-        val gridSize = 15
+        val suggestions = mutableListOf<LocationSuggestion>()
+        val gridSize = 20
         val latStep  = (bounds.northeast.latitude  - bounds.southwest.latitude)  / gridSize
         val lngStep  = (bounds.northeast.longitude - bounds.southwest.longitude) / gridSize
 
-        return (0..gridSize).flatMap { i ->
-            (0..gridSize).mapNotNull { j ->
-                val candidate = LatLng(
-                    bounds.southwest.latitude  + latStep * i,
-                    bounds.southwest.longitude + lngStep * j
-                )
-                val score = calculateLocationScore(candidate, sameCategory, allBusinesses)
-                if (score > 0) LocationSuggestion(candidate, score, generateReason(score, sameCategory.size))
-                else null
-            }
-        }.sortedByDescending { it.score }
+        for (i in 0..gridSize) for (j in 0..gridSize) {
+            val candidate = LatLng(
+                bounds.southwest.latitude  + latStep * i,
+                bounds.southwest.longitude + lngStep * j
+            )
+            if (!isUrbanCandidate(candidate, allBusinesses)) continue   // skip non-urban
+            val score = calculateLocationScore(candidate, sameCategory, allBusinesses)
+            if (score > 0) suggestions.add(LocationSuggestion(candidate, score, generateReason(score, sameCategory.size)))
+        }
+        return suggestions.sortedByDescending { it.score }
     }
 
+    // ─────────────────────────────────────────────────────────────
+    //  SCORING
+    // ─────────────────────────────────────────────────────────────
     private fun calculateLocationScore(
         location: LatLng,
         sameCategory: List<MyItem>,
         allBusinesses: List<MyItem>
     ): Double {
-        val nearestCompetitor   = sameCategory.minOfOrNull { calculateDistance(location, it.position) } ?: Double.MAX_VALUE
+        val nearestCompetitor   = sameCategory.minOfOrNull  { calculateDistance(location, it.position) } ?: Double.MAX_VALUE
         val nearestBusiness     = allBusinesses.minOfOrNull { calculateDistance(location, it.position) } ?: Double.MAX_VALUE
-        val nearbyBusinessCount = allBusinesses.count { calculateDistance(location, it.position) < 2.0 }
-        val nearbyCompetitors   = sameCategory.count  { calculateDistance(location, it.position) < 1.0 }
+        val nearbyBusinessCount = allBusinesses.count       { calculateDistance(location, it.position) < 2.0 }
+        val nearbyCompetitors   = sameCategory.count        { calculateDistance(location, it.position) < 1.0 }
 
-        return max(
-            min(nearestCompetitor * 10, 50.0) +
-                    max(30.0 - nearestBusiness * 5, 0.0) +
-                    min(nearbyBusinessCount * 2.0, 20.0) -
-                    nearbyCompetitors * 10.0,
-            0.0
-        )
+        var score = 0.0
+        score += min(nearestCompetitor * 10, 50.0)
+        score += max(30.0 - nearestBusiness * 5, 0.0)
+        score += min(nearbyBusinessCount * 2.0, 20.0)
+        score -= nearbyCompetitors * 10.0
+        return max(score, 0.0)
     }
 
-    private fun calculateDistance(pos1: LatLng, pos2: LatLng): Double {
-        val R    = 6371.0
-        val dLat = Math.toRadians(pos2.latitude  - pos1.latitude)
-        val dLng = Math.toRadians(pos2.longitude - pos1.longitude)
-        val a    = sin(dLat / 2).pow(2) +
-                cos(Math.toRadians(pos1.latitude)) *
-                cos(Math.toRadians(pos2.latitude)) *
-                sin(dLng / 2).pow(2)
-        return R * 2 * atan2(sqrt(a), sqrt(1 - a))
+    private fun calculateDistance(a: LatLng, b: LatLng): Double {
+        val dLat = Math.toRadians(b.latitude  - a.latitude)
+        val dLng = Math.toRadians(b.longitude - a.longitude)
+        val h = sin(dLat / 2).pow(2) +
+                cos(Math.toRadians(a.latitude)) * cos(Math.toRadians(b.latitude)) * sin(dLng / 2).pow(2)
+        return 6371.0 * 2 * atan2(sqrt(h), sqrt(1 - h))
     }
 
-    private fun generateReason(score: Double, totalCompetitors: Int): String = when {
-        score > 70 -> "Excelente ubicación: Baja competencia, alta actividad comercial"
+    private fun generateReason(score: Double, @Suppress("UNUSED_PARAMETER") n: Int) = when {
+        score > 70 -> "Excelente: Baja competencia, alta actividad comercial"
         score > 50 -> "Buena ubicación: Balance entre competencia y tráfico"
-        score > 30 -> "Ubicación aceptable: Zona emergente con potencial"
-        else       -> "Ubicación con oportunidades de crecimiento"
+        score > 30 -> "Zona emergente con potencial"
+        else       -> "Oportunidad de crecimiento"
     }
 
-    // ── Datos de muestra ──────────────────────────────────────────────────────
-
+    // ─────────────────────────────────────────────────────────────
+    //  DATA — tighter clusters so urban filter works correctly
+    // ─────────────────────────────────────────────────────────────
     private fun loadBusinessDataFallback() {
-        try {
-            generateSampleBusinessData()
-            Log.d(TAG, "Negocios cargados: ${allBusinessLocations.size}")
-        } catch (e: Exception) {
-            Log.e(TAG, "Error: ${e.message}", e)
-            Toast.makeText(this, "Error al cargar datos: ${e.message}", Toast.LENGTH_LONG).show()
-        }
+        generateSampleBusinessData()
+        Log.d(TAG, "Negocios cargados: ${allBusinessLocations.size}")
     }
 
     private fun generateSampleBusinessData() {
-        val random     = java.util.Random()
+        val rng        = java.util.Random()
         val categories = listOf("restaurant", "retail", "service", "entertainment")
-        val majorCities = listOf(
+        val cities = listOf(
             LatLng(25.6866, -100.3161) to "Monterrey",
             LatLng(25.4232, -100.9903) to "Saltillo",
             LatLng(19.4326,  -99.1332) to "Ciudad de México",
@@ -577,35 +485,33 @@ class MainActivity : AppCompatActivity() {
             LatLng(48.8566,    2.3522) to "París",
             LatLng(35.6762,  139.6503) to "Tokio"
         )
-        majorCities.forEach { (center, cityName) ->
-            repeat(80 + random.nextInt(41)) {
-                val location = LatLng(
-                    center.latitude  + (random.nextDouble() - 0.5) * 0.1,
-                    center.longitude + (random.nextDouble() - 0.5) * 0.1
-                )
-                val category = categories[random.nextInt(categories.size)]
-                allBusinessLocations.add(location)
-                allBusinessItems.add(MyItem(location, "Negocio en $cityName", "Categoría: $category", category))
+        cities.forEach { (center, name) ->
+            // Dense downtown core (±0.03° ≈ ±3 km)
+            repeat(60 + rng.nextInt(30)) {
+                addBusiness(LatLng(center.latitude  + (rng.nextDouble() - 0.5) * 0.06,
+                    center.longitude + (rng.nextDouble() - 0.5) * 0.06),
+                    name, categories[rng.nextInt(categories.size)])
+            }
+            // Sparser suburbs (±0.09° ≈ ±9 km) — still within urban filter
+            repeat(20 + rng.nextInt(10)) {
+                addBusiness(LatLng(center.latitude  + (rng.nextDouble() - 0.5) * 0.09,
+                    center.longitude + (rng.nextDouble() - 0.5) * 0.09),
+                    name, categories[rng.nextInt(categories.size)])
             }
         }
+        Log.d(TAG, "Generados ${allBusinessLocations.size} negocios en ${cities.size} ciudades")
     }
 
-    private fun centerMapOnData(map: GoogleMap) {
-        if (allBusinessLocations.isEmpty()) {
-            map.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(20.0, 0.0), 2f))
-            return
-        }
-        try {
-            val builder = LatLngBounds.Builder()
-            allBusinessLocations.forEach { builder.include(it) }
-            map.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 100))
-        } catch (e: Exception) {
-            map.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(20.0, 0.0), 2f))
-        }
+    private fun addBusiness(loc: LatLng, city: String, category: String) {
+        allBusinessLocations.add(loc)
+        allBusinessItems.add(MyItem(loc, "Negocio en $city", "Categoría: $category", category))
     }
 
-    // ── Data classes ──────────────────────────────────────────────────────────
+    private fun centerMapOnMonterrey(map: GoogleMap) {
+        map.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(25.6866, -100.3161), 12f))
+    }
 
+    // ─────────────────────────────────────────────────────────────
     data class LocationSuggestion(val position: LatLng, val score: Double, val reason: String)
 
     companion object {
@@ -613,9 +519,7 @@ class MainActivity : AppCompatActivity() {
 
         fun applyInsets(container: View) {
             ViewCompat.setOnApplyWindowInsetsListener(container) { view, insets ->
-                val p = insets.getInsets(
-                    WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout()
-                )
+                val p = insets.getInsets(WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout())
                 view.setPadding(p.left, p.top, p.right, p.bottom)
                 insets
             }
