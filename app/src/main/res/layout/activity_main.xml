@@ -33,123 +33,114 @@
 
         <!-- ══════════════════════════════════════
              CARD SUPERIOR — "¿Qué negocio quieres crear hoy?"
+             Estilo coherente con dialog_agregar_propiedad
         ══════════════════════════════════════ -->
-        <com.google.android.material.card.MaterialCardView
+        <androidx.cardview.widget.CardView
             android:id="@+id/top_card"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginTop="16dp"
-            app:cardElevation="12dp"
-            app:cardCornerRadius="24dp"
-            app:cardBackgroundColor="@android:color/transparent"
-            app:strokeWidth="0dp"
+            app:cardElevation="4dp"
+            app:cardCornerRadius="0dp"
+            app:cardBackgroundColor="#FFFFFF"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <!-- Fondo degradado naranja Tsukiji -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="@drawable/bg_top_card"
-                android:padding="20dp">
+                android:orientation="vertical">
 
-                <!-- Fila superior: ícono pin + título -->
+                <!-- Header naranja — idéntico al de dialog_agregar_propiedad -->
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
+                    android:layout_height="52dp"
+                    android:background="#F5A623"
                     android:gravity="center_vertical"
-                    android:layout_marginBottom="14dp">
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp">
 
-                    <!-- Ícono de ubicación con fondo semi-transparente -->
-                    <FrameLayout
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"
-                        android:background="@drawable/bg_icon_circle"
-                        android:layout_marginEnd="12dp">
-                        <ImageView
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:src="@android:drawable/ic_menu_mylocation"
-                            android:tint="#FFFFFF"
-                            android:layout_gravity="center" />
-                    </FrameLayout>
-
-                    <LinearLayout
+                    <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:orientation="vertical">
+                        android:text="TSUKIJI MAPS"
+                        android:textColor="#FFFFFF"
+                        android:textSize="17sp"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.08"
+                        android:fontFamily="sans-serif-condensed" />
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="TSUKIJI MAPS"
-                            android:textColor="#FFFDE7"
-                            android:textSize="10sp"
-                            android:textStyle="bold"
-                            android:letterSpacing="0.2" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="¿Qué negocio quieres crear hoy?"
-                            android:textStyle="bold"
-                            android:textSize="16sp"
-                            android:textColor="#FFFFFF" />
-
-                    </LinearLayout>
+                    <ImageView
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:src="@android:drawable/ic_menu_mylocation"
+                        android:tint="#FFFFFF" />
 
                 </LinearLayout>
 
-                <!-- Chips de categoría de negocio -->
-                <HorizontalScrollView
+                <!-- Cuerpo del card con padding — mismo estilo que el diálogo -->
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:scrollbars="none"
-                    android:layout_marginBottom="14dp">
+                    android:orientation="vertical"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:paddingTop="16dp"
+                    android:paddingBottom="16dp">
 
-                    <com.google.android.material.chip.ChipGroup
-                        android:id="@+id/chip_group_new_business"
+                    <!-- Label de sección — igual que "Tipo de operación" en el diálogo -->
+                    <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:chipSpacing="6dp"
-                        app:singleSelection="true"
-                        app:selectionRequired="false" />
+                        android:text="Tipo de negocio"
+                        android:textColor="#212121"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="8dp" />
 
-                </HorizontalScrollView>
+                    <!-- Chips de categoría de negocio -->
+                    <HorizontalScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:scrollbars="none"
+                        android:layout_marginBottom="16dp">
 
-                <!-- Botón "Encontrar mejor ubicación" — cyan Tsukiji -->
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_find_location"
-                    android:layout_width="match_parent"
-                    android:layout_height="52dp"
-                    android:text="Encontrar mejor ubicación"
-                    android:textAllCaps="false"
-                    android:textSize="15sp"
-                    android:textStyle="bold"
-                    android:textColor="#FFFFFF"
-                    android:letterSpacing="0.02"
-                    app:backgroundTint="#00B4D8"
-                    app:icon="@android:drawable/ic_menu_mylocation"
-                    app:iconGravity="start"
-                    app:iconTint="#FFFFFF"
-                    app:iconPadding="8dp"
-                    app:cornerRadius="14dp"
-                    app:elevation="4dp" />
+                        <com.google.android.material.chip.ChipGroup
+                            android:id="@+id/chip_group_new_business"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:chipSpacing="6dp"
+                            app:singleSelection="true"
+                            app:selectionRequired="false" />
+
+                    </HorizontalScrollView>
+
+                    <!-- Botón PUBLICAR — mismo estilo que btn_publicar en el diálogo -->
+                    <Button
+                        android:id="@+id/btn_find_location"
+                        android:layout_width="match_parent"
+                        android:layout_height="52dp"
+                        android:text="ENCONTRAR MEJOR UBICACIÓN"
+                        android:textColor="#FFFFFF"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.05"
+                        android:background="#F5A623" />
+
+                </LinearLayout>
 
             </LinearLayout>
 
-        </com.google.android.material.card.MaterialCardView>
+        </androidx.cardview.widget.CardView>
 
         <!-- ══════════════════════════════════════
              CARD DE FILTROS (colapsable)
+             Mismo estilo de card blanca con header naranja
         ══════════════════════════════════════ -->
-        <com.google.android.material.card.MaterialCardView
+        <androidx.cardview.widget.CardView
             android:id="@+id/filter_card"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -157,10 +148,9 @@
             android:layout_marginEnd="16dp"
             android:layout_marginTop="8dp"
             android:visibility="gone"
-            app:cardElevation="8dp"
-            app:cardCornerRadius="20dp"
-            app:cardBackgroundColor="@android:color/transparent"
-            app:strokeWidth="0dp"
+            app:cardElevation="4dp"
+            app:cardCornerRadius="0dp"
+            app:cardBackgroundColor="#FFFFFF"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/top_card">
@@ -168,42 +158,38 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="@drawable/bg_filter_card"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
-                android:paddingTop="14dp"
-                android:paddingBottom="14dp">
+                android:orientation="vertical">
 
-                <!-- Header del filtro -->
+                <!-- Header naranja compacto -->
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
+                    android:layout_height="40dp"
+                    android:background="#F5A623"
                     android:gravity="center_vertical"
-                    android:layout_marginBottom="10dp">
-
-                    <View
-                        android:layout_width="3dp"
-                        android:layout_height="16dp"
-                        android:background="#F5732A"
-                        android:layout_marginEnd="8dp" />
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp">
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Filtrar por categoría"
-                        android:textStyle="bold"
+                        android:text="FILTRAR POR CATEGORÍA"
+                        android:textColor="#FFFFFF"
                         android:textSize="13sp"
-                        android:textColor="#2D3436"
-                        android:letterSpacing="0.02" />
+                        android:textStyle="bold"
+                        android:letterSpacing="0.08"
+                        android:fontFamily="sans-serif-condensed" />
 
                 </LinearLayout>
 
+                <!-- Chips de filtro con padding interno -->
                 <HorizontalScrollView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:scrollbars="none">
+                    android:scrollbars="none"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:paddingTop="12dp"
+                    android:paddingBottom="12dp">
 
                     <com.google.android.material.chip.ChipGroup
                         android:id="@+id/chip_group_filters"
@@ -217,7 +203,7 @@
 
             </LinearLayout>
 
-        </com.google.android.material.card.MaterialCardView>
+        </androidx.cardview.widget.CardView>
 
         <!-- ══════════════════════════════════════
              FAB — mostrar/ocultar filtros
@@ -229,27 +215,27 @@
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="12dp"
             android:src="@android:drawable/ic_menu_sort_by_size"
-            app:backgroundTint="#F5732A"
+            app:backgroundTint="#F5A623"
             app:tint="#FFFFFF"
             app:fabSize="normal"
             app:borderWidth="0dp"
-            app:elevation="8dp"
+            app:elevation="4dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/legend_card" />
 
         <!-- ══════════════════════════════════════
              LEYENDA DEL MAPA DE CALOR
+             Card blanca con header naranja — coherente con el resto
         ══════════════════════════════════════ -->
-        <com.google.android.material.card.MaterialCardView
+        <androidx.cardview.widget.CardView
             android:id="@+id/legend_card"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
-            app:cardElevation="8dp"
-            app:cardCornerRadius="16dp"
-            app:cardBackgroundColor="@android:color/transparent"
-            app:strokeWidth="0dp"
+            app:cardElevation="4dp"
+            app:cardCornerRadius="0dp"
+            app:cardBackgroundColor="#FFFFFF"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 
@@ -257,119 +243,123 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:background="@drawable/bg_legend_card"
-                android:paddingStart="12dp"
-                android:paddingEnd="14dp"
-                android:paddingTop="10dp"
-                android:paddingBottom="10dp">
+                android:minWidth="110dp">
 
-                <!-- Título leyenda con acento naranja -->
+                <!-- Header naranja compacto -->
                 <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="32dp"
+                    android:background="#F5A623"
                     android:gravity="center_vertical"
-                    android:layout_marginBottom="8dp">
-
-                    <View
-                        android:layout_width="3dp"
-                        android:layout_height="12dp"
-                        android:background="#F5732A"
-                        android:layout_marginEnd="6dp" />
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Densidad"
-                        android:textStyle="bold"
+                        android:text="DENSIDAD"
+                        android:textColor="#FFFFFF"
                         android:textSize="11sp"
-                        android:textColor="#2D3436"
-                        android:letterSpacing="0.05" />
+                        android:textStyle="bold"
+                        android:letterSpacing="0.1"
+                        android:fontFamily="sans-serif-condensed" />
 
                 </LinearLayout>
 
-                <!-- Baja -->
+                <!-- Filas de leyenda con padding interno -->
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:layout_marginBottom="5dp">
-                    <View
-                        android:layout_width="12dp"
-                        android:layout_height="12dp"
-                        android:background="@drawable/bg_dot_baja"
-                        android:layout_marginEnd="7dp" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Baja"
-                        android:textSize="10sp"
-                        android:textColor="#5A6C7D" />
-                </LinearLayout>
+                    android:orientation="vertical"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="12dp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp">
 
-                <!-- Media -->
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:layout_marginBottom="5dp">
-                    <View
-                        android:layout_width="12dp"
-                        android:layout_height="12dp"
-                        android:background="@drawable/bg_dot_media"
-                        android:layout_marginEnd="7dp" />
-                    <TextView
+                    <!-- Baja -->
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Media"
-                        android:textSize="10sp"
-                        android:textColor="#5A6C7D" />
-                </LinearLayout>
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="5dp">
+                        <View
+                            android:layout_width="12dp"
+                            android:layout_height="12dp"
+                            android:background="@drawable/bg_dot_baja"
+                            android:layout_marginEnd="7dp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Baja"
+                            android:textSize="11sp"
+                            android:textColor="#757575" />
+                    </LinearLayout>
 
-                <!-- Alta -->
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:layout_marginBottom="5dp">
-                    <View
-                        android:layout_width="12dp"
-                        android:layout_height="12dp"
-                        android:background="@drawable/bg_dot_alta"
-                        android:layout_marginEnd="7dp" />
-                    <TextView
+                    <!-- Media -->
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Alta"
-                        android:textSize="10sp"
-                        android:textColor="#5A6C7D" />
-                </LinearLayout>
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="5dp">
+                        <View
+                            android:layout_width="12dp"
+                            android:layout_height="12dp"
+                            android:background="@drawable/bg_dot_media"
+                            android:layout_marginEnd="7dp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Media"
+                            android:textSize="11sp"
+                            android:textColor="#757575" />
+                    </LinearLayout>
 
-                <!-- Muy Alta -->
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical">
-                    <View
-                        android:layout_width="12dp"
-                        android:layout_height="12dp"
-                        android:background="@drawable/bg_dot_muy_alta"
-                        android:layout_marginEnd="7dp" />
-                    <TextView
+                    <!-- Alta -->
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Muy Alta"
-                        android:textSize="10sp"
-                        android:textColor="#5A6C7D" />
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="5dp">
+                        <View
+                            android:layout_width="12dp"
+                            android:layout_height="12dp"
+                            android:background="@drawable/bg_dot_alta"
+                            android:layout_marginEnd="7dp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Alta"
+                            android:textSize="11sp"
+                            android:textColor="#757575" />
+                    </LinearLayout>
+
+                    <!-- Muy Alta -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+                        <View
+                            android:layout_width="12dp"
+                            android:layout_height="12dp"
+                            android:background="@drawable/bg_dot_muy_alta"
+                            android:layout_marginEnd="7dp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Muy alta"
+                            android:textSize="11sp"
+                            android:textColor="#757575" />
+                    </LinearLayout>
+
                 </LinearLayout>
 
             </LinearLayout>
 
-        </com.google.android.material.card.MaterialCardView>
+        </androidx.cardview.widget.CardView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
