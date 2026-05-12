@@ -211,22 +211,6 @@
 
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- BOTÓN ubicación actual (esquina izq) -->
-        <FrameLayout
-            android:layout_width="44dp"
-            android:layout_height="44dp"
-            android:background="#FFFFFF"
-            android:layout_marginStart="16dp"
-            android:layout_marginBottom="80dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent">
-            <ImageView
-                android:layout_width="22dp"
-                android:layout_height="22dp"
-                android:src="@android:drawable/ic_menu_mylocation"
-                app:tint="#888888"
-                android:layout_gravity="center" />
-        </FrameLayout>
 
         <!-- LEYENDA esquina derecha -->
         <com.google.android.material.card.MaterialCardView
@@ -287,28 +271,6 @@
 
             </LinearLayout>
 
-        </com.google.android.material.card.MaterialCardView>
-
-        <!-- FAB filtros (esquina derecha, encima de leyenda) -->
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="44dp"
-            android:layout_height="44dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="8dp"
-            app:cardElevation="4dp"
-            app:cardCornerRadius="22dp"
-            app:cardBackgroundColor="#FFFFFF"
-            app:strokeWidth="0dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/legend_card">
-            <FrameLayout android:layout_width="match_parent" android:layout_height="match_parent" android:id="@+id/fab_filter_round">
-                <ImageView
-                    android:layout_width="22dp"
-                    android:layout_height="22dp"
-                    android:src="@android:drawable/ic_menu_sort_by_size"
-                    app:tint="#F5732A"
-                    android:layout_gravity="center" />
-            </FrameLayout>
         </com.google.android.material.card.MaterialCardView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
