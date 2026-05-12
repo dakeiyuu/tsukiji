@@ -12,7 +12,6 @@
         android:orientation="vertical"
         android:paddingBottom="28dp">
 
-        <!-- Handle -->
         <View
             android:layout_width="40dp"
             android:layout_height="4dp"
@@ -21,7 +20,6 @@
             android:layout_marginBottom="4dp"
             android:background="#DDDDDD" />
 
-        <!-- Header -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -53,7 +51,6 @@
 
         </LinearLayout>
 
-        <!-- CARD: Nombre, Descripción, Tipo, Precio -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -70,7 +67,6 @@
                 android:orientation="vertical"
                 android:padding="16dp">
 
-                <!-- Nombre -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/til_nombre"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -78,6 +74,8 @@
                     android:layout_height="wrap_content"
                     android:hint="Nombre de la propiedad *"
                     android:layout_marginBottom="12dp"
+                    app:hintTextColor="#F5A623"
+                    app:boxStrokeColor="#F5A623"
                     app:boxCornerRadiusTopStart="8dp"
                     app:boxCornerRadiusTopEnd="8dp"
                     app:boxCornerRadiusBottomStart="8dp"
@@ -86,11 +84,11 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:textColor="#1A1A1A"
                         android:inputType="textCapSentences" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- Descripción -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/til_descripcion"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -98,6 +96,8 @@
                     android:layout_height="wrap_content"
                     android:hint="Descripción (opcional)"
                     android:layout_marginBottom="12dp"
+                    app:hintTextColor="#F5A623"
+                    app:boxStrokeColor="#F5A623"
                     app:boxCornerRadiusTopStart="8dp"
                     app:boxCornerRadiusTopEnd="8dp"
                     app:boxCornerRadiusBottomStart="8dp"
@@ -106,13 +106,13 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:textColor="#1A1A1A"
                         android:inputType="textMultiLine|textCapSentences"
                         android:minLines="2"
                         android:maxLines="4" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- Tipo -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -136,6 +136,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="Venta"
+                        android:textColor="#F5A623"
                         app:strokeColor="#F5A623"
                         app:cornerRadius="8dp" />
 
@@ -146,12 +147,12 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="Renta"
+                        android:textColor="#F5A623"
                         app:strokeColor="#F5A623"
                         app:cornerRadius="8dp" />
 
                 </com.google.android.material.button.MaterialButtonToggleGroup>
 
-                <!-- Precio -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/til_precio"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -159,6 +160,8 @@
                     android:layout_height="wrap_content"
                     android:hint="Precio (MXN) *"
                     app:prefixText="$"
+                    app:hintTextColor="#F5A623"
+                    app:boxStrokeColor="#F5A623"
                     app:boxCornerRadiusTopStart="8dp"
                     app:boxCornerRadiusTopEnd="8dp"
                     app:boxCornerRadiusBottomStart="8dp"
@@ -167,6 +170,7 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:textColor="#1A1A1A"
                         android:inputType="numberDecimal" />
 
                 </com.google.android.material.textfield.TextInputLayout>
@@ -175,7 +179,6 @@
 
         </androidx.cardview.widget.CardView>
 
-        <!-- CARD: Dirección -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -201,7 +204,6 @@
                     android:textStyle="bold"
                     android:layout_marginBottom="12dp" />
 
-                <!-- Calle -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/til_calle"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -209,6 +211,8 @@
                     android:layout_height="wrap_content"
                     android:hint="Calle *"
                     android:layout_marginBottom="10dp"
+                    app:hintTextColor="#F5A623"
+                    app:boxStrokeColor="#F5A623"
                     app:boxCornerRadiusTopStart="8dp"
                     app:boxCornerRadiusTopEnd="8dp"
                     app:boxCornerRadiusBottomStart="8dp"
@@ -217,11 +221,11 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:textColor="#1A1A1A"
                         android:inputType="textCapWords" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- Número Ext / Int -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -236,6 +240,8 @@
                         android:layout_weight="1"
                         android:hint="Núm. Ext *"
                         android:layout_marginEnd="6dp"
+                        app:hintTextColor="#F5A623"
+                        app:boxStrokeColor="#F5A623"
                         app:boxCornerRadiusTopStart="8dp"
                         app:boxCornerRadiusTopEnd="8dp"
                         app:boxCornerRadiusBottomStart="8dp"
@@ -244,6 +250,7 @@
                         <com.google.android.material.textfield.TextInputEditText
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:textColor="#1A1A1A"
                             android:inputType="text" />
 
                     </com.google.android.material.textfield.TextInputLayout>
@@ -256,6 +263,8 @@
                         android:layout_weight="1"
                         android:hint="Núm. Int"
                         android:layout_marginStart="6dp"
+                        app:hintTextColor="#F5A623"
+                        app:boxStrokeColor="#F5A623"
                         app:boxCornerRadiusTopStart="8dp"
                         app:boxCornerRadiusTopEnd="8dp"
                         app:boxCornerRadiusBottomStart="8dp"
@@ -264,13 +273,13 @@
                         <com.google.android.material.textfield.TextInputEditText
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:textColor="#1A1A1A"
                             android:inputType="text" />
 
                     </com.google.android.material.textfield.TextInputLayout>
 
                 </LinearLayout>
 
-                <!-- Colonia -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/til_colonia"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -278,6 +287,8 @@
                     android:layout_height="wrap_content"
                     android:hint="Colonia"
                     android:layout_marginBottom="10dp"
+                    app:hintTextColor="#F5A623"
+                    app:boxStrokeColor="#F5A623"
                     app:boxCornerRadiusTopStart="8dp"
                     app:boxCornerRadiusTopEnd="8dp"
                     app:boxCornerRadiusBottomStart="8dp"
@@ -286,11 +297,11 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:textColor="#1A1A1A"
                         android:inputType="textCapWords" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- CP / Estado -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -305,6 +316,8 @@
                         android:layout_weight="1"
                         android:hint="C.P."
                         android:layout_marginEnd="6dp"
+                        app:hintTextColor="#F5A623"
+                        app:boxStrokeColor="#F5A623"
                         app:boxCornerRadiusTopStart="8dp"
                         app:boxCornerRadiusTopEnd="8dp"
                         app:boxCornerRadiusBottomStart="8dp"
@@ -313,6 +326,7 @@
                         <com.google.android.material.textfield.TextInputEditText
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:textColor="#1A1A1A"
                             android:inputType="number"
                             android:maxLength="5" />
 
@@ -326,6 +340,8 @@
                         android:layout_weight="2"
                         android:hint="Estado"
                         android:layout_marginStart="6dp"
+                        app:hintTextColor="#F5A623"
+                        app:boxStrokeColor="#F5A623"
                         app:boxCornerRadiusTopStart="8dp"
                         app:boxCornerRadiusTopEnd="8dp"
                         app:boxCornerRadiusBottomStart="8dp"
@@ -334,19 +350,21 @@
                         <com.google.android.material.textfield.TextInputEditText
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:textColor="#1A1A1A"
                             android:inputType="textCapWords" />
 
                     </com.google.android.material.textfield.TextInputLayout>
 
                 </LinearLayout>
 
-                <!-- Ciudad -->
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Ciudad *"
                     android:layout_marginBottom="10dp"
+                    app:hintTextColor="#F5A623"
+                    app:boxStrokeColor="#F5A623"
                     app:boxCornerRadiusTopStart="8dp"
                     app:boxCornerRadiusTopEnd="8dp"
                     app:boxCornerRadiusBottomStart="8dp"
@@ -357,16 +375,18 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:completionThreshold="1"
+                        android:textColor="#1A1A1A"
                         android:inputType="textCapWords" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- País -->
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="País"
+                    app:hintTextColor="#F5A623"
+                    app:boxStrokeColor="#F5A623"
                     app:boxCornerRadiusTopStart="8dp"
                     app:boxCornerRadiusTopEnd="8dp"
                     app:boxCornerRadiusBottomStart="8dp"
@@ -377,6 +397,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:completionThreshold="1"
+                        android:textColor="#1A1A1A"
                         android:inputType="textCapWords" />
 
                 </com.google.android.material.textfield.TextInputLayout>
@@ -385,7 +406,6 @@
 
         </androidx.cardview.widget.CardView>
 
-        <!-- CARD: Fotos -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -411,7 +431,6 @@
                     android:textStyle="bold"
                     android:layout_marginBottom="12dp" />
 
-                <!-- Row 1 -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -528,7 +547,6 @@
 
                 </LinearLayout>
 
-                <!-- Row 2 -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -648,7 +666,6 @@
 
         </androidx.cardview.widget.CardView>
 
-        <!-- Botón publicar -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_publicar"
             android:layout_width="match_parent"
