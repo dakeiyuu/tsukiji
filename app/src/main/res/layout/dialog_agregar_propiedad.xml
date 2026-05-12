@@ -12,53 +12,62 @@
         android:orientation="vertical"
         android:paddingBottom="24dp">
 
-        <!-- Handle del BottomSheet -->
+        <!-- Handle -->
         <View
             android:layout_width="40dp"
             android:layout_height="4dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="10dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="16dp"
             android:background="#DDDDDD" />
 
-        <!-- Header naranja -->
+        <!-- Título + botón cerrar -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="52dp"
-            android:background="#F5A623"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:paddingStart="16dp"
+            android:paddingStart="20dp"
             android:paddingEnd="16dp"
             android:layout_marginBottom="20dp">
 
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="AGREGAR PROPIEDAD"
-                android:textColor="#FFFFFF"
-                android:textSize="17sp"
-                android:textStyle="bold"
-                android:letterSpacing="0.08"
-                android:fontFamily="sans-serif-condensed" />
+                android:layout_weight="1"
+                android:text="Agregar propiedad"
+                android:textColor="#F5A623"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/btn_cerrar_dialog"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:src="@android:drawable/ic_menu_close_clear_cancel"
+                android:tint="#F5A623"
+                android:background="#FFF3E0"
+                android:padding="8dp" />
 
         </LinearLayout>
 
-        <!-- Label tipo operación -->
+        <!-- Tipo de operación -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Tipo de operación"
-            android:textColor="#757575"
-            android:textSize="12sp"
-            android:paddingStart="16dp"
-            android:layout_marginBottom="6dp" />
+            android:textColor="#212121"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:paddingStart="20dp"
+            android:layout_marginBottom="8dp" />
 
-        <!-- Toggle Venta / Renta -->
         <com.google.android.material.button.MaterialButtonToggleGroup
             android:id="@+id/toggle_tipo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
             android:layout_marginBottom="20dp"
             app:singleSelection="true"
             app:selectionRequired="true">
@@ -66,28 +75,32 @@
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_venta"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="wrap_content"
-                android:layout_height="36dp"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
                 android:text="Venta"
                 android:textColor="#F5A623"
-                android:textSize="13sp"
+                android:textSize="15sp"
                 app:strokeColor="#F5A623"
-                app:strokeWidth="1dp" />
+                app:strokeWidth="1.5dp"
+                app:cornerRadius="12dp" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_renta"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="wrap_content"
-                android:layout_height="36dp"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
                 android:text="Renta"
-                android:textColor="#F5A623"
-                android:textSize="13sp"
-                app:strokeColor="#F5A623"
-                app:strokeWidth="1dp" />
+                android:textColor="#888888"
+                android:textSize="15sp"
+                app:strokeColor="#DDDDDD"
+                app:strokeWidth="1.5dp"
+                app:cornerRadius="12dp" />
 
         </com.google.android.material.button.MaterialButtonToggleGroup>
 
-        <!-- ── Nombre ── -->
+        <!-- Nombre -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -95,17 +108,23 @@
             android:textColor="#212121"
             android:textSize="13sp"
             android:textStyle="bold"
-            android:paddingStart="16dp"
+            android:paddingStart="20dp"
             android:layout_marginBottom="4dp" />
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_nombre"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
             android:layout_marginBottom="16dp"
             app:boxStrokeColor="#F5A623"
-            app:boxStrokeWidth="1dp"
+            app:boxCornerRadiusTopStart="12dp"
+            app:boxCornerRadiusTopEnd="12dp"
+            app:boxCornerRadiusBottomStart="12dp"
+            app:boxCornerRadiusBottomEnd="12dp"
+            app:startIconDrawable="@android:drawable/ic_menu_myplaces"
+            app:startIconTint="#F5A623"
             app:hintEnabled="false"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
@@ -113,15 +132,16 @@
                 android:id="@+id/et_nombre"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Ej: Local Comercial Centro"
+                android:hint="Ej. Local Comercial Centro"
                 android:textColor="#212121"
                 android:textColorHint="#AAAAAA"
                 android:textSize="14sp"
-                android:inputType="textCapWords" />
+                android:inputType="textCapWords"
+                android:padding="14dp" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- ── Dirección ── -->
+        <!-- Dirección label -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -129,33 +149,256 @@
             android:textColor="#212121"
             android:textSize="13sp"
             android:textStyle="bold"
-            android:paddingStart="16dp"
+            android:paddingStart="20dp"
             android:layout_marginBottom="4dp" />
 
+        <!-- Calle -->
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_calle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="16dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="10dp"
             app:boxStrokeColor="#F5A623"
-            app:boxStrokeWidth="1dp"
+            app:boxCornerRadiusTopStart="12dp"
+            app:boxCornerRadiusTopEnd="12dp"
+            app:boxCornerRadiusBottomStart="12dp"
+            app:boxCornerRadiusBottomEnd="12dp"
+            app:startIconDrawable="@android:drawable/ic_menu_mylocation"
+            app:startIconTint="#F5A623"
             app:hintEnabled="false"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_direccion"
+                android:id="@+id/et_calle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Ej: Av. Constitución 100, Monterrey"
+                android:hint="Calle"
                 android:textColor="#212121"
                 android:textColorHint="#AAAAAA"
                 android:textSize="14sp"
-                android:inputType="textPostalAddress" />
+                android:inputType="textPostalAddress"
+                android:padding="14dp" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- ── Precio ── -->
+        <!-- Núm. exterior e interior -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="10dp">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_numero_ext"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="6dp"
+                app:boxStrokeColor="#F5A623"
+                app:boxCornerRadiusTopStart="12dp"
+                app:boxCornerRadiusTopEnd="12dp"
+                app:boxCornerRadiusBottomStart="12dp"
+                app:boxCornerRadiusBottomEnd="12dp"
+                app:hintEnabled="false"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_numero_ext"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Núm. exterior"
+                    android:textColor="#212121"
+                    android:textColorHint="#AAAAAA"
+                    android:textSize="13sp"
+                    android:padding="14dp" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_numero_int"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="6dp"
+                app:boxStrokeColor="#F5A623"
+                app:boxCornerRadiusTopStart="12dp"
+                app:boxCornerRadiusTopEnd="12dp"
+                app:boxCornerRadiusBottomStart="12dp"
+                app:boxCornerRadiusBottomEnd="12dp"
+                app:hintEnabled="false"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_numero_int"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Núm. interior (opt.)"
+                    android:textColor="#212121"
+                    android:textColorHint="#AAAAAA"
+                    android:textSize="13sp"
+                    android:padding="14dp" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </LinearLayout>
+
+        <!-- Colonia -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_colonia"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="10dp"
+            app:boxStrokeColor="#F5A623"
+            app:boxCornerRadiusTopStart="12dp"
+            app:boxCornerRadiusTopEnd="12dp"
+            app:boxCornerRadiusBottomStart="12dp"
+            app:boxCornerRadiusBottomEnd="12dp"
+            app:hintEnabled="false"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_colonia"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Colonia"
+                android:textColor="#212121"
+                android:textColorHint="#AAAAAA"
+                android:textSize="14sp"
+                android:inputType="textCapWords"
+                android:padding="14dp" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Ciudad y CP -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="10dp">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_ciudad"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="6dp"
+                app:boxStrokeColor="#F5A623"
+                app:boxCornerRadiusTopStart="12dp"
+                app:boxCornerRadiusTopEnd="12dp"
+                app:boxCornerRadiusBottomStart="12dp"
+                app:boxCornerRadiusBottomEnd="12dp"
+                app:hintEnabled="false"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_ciudad"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Ciudad"
+                    android:textColor="#212121"
+                    android:textColorHint="#AAAAAA"
+                    android:textSize="13sp"
+                    android:inputType="textCapWords"
+                    android:padding="14dp" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_cp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="6dp"
+                app:boxStrokeColor="#F5A623"
+                app:boxCornerRadiusTopStart="12dp"
+                app:boxCornerRadiusTopEnd="12dp"
+                app:boxCornerRadiusBottomStart="12dp"
+                app:boxCornerRadiusBottomEnd="12dp"
+                app:hintEnabled="false"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_cp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="C.P."
+                    android:textColor="#212121"
+                    android:textColorHint="#AAAAAA"
+                    android:textSize="13sp"
+                    android:inputType="number"
+                    android:padding="14dp" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </LinearLayout>
+
+        <!-- Estado -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_estado"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="10dp"
+            app:boxStrokeColor="#F5A623"
+            app:boxCornerRadiusTopStart="12dp"
+            app:boxCornerRadiusTopEnd="12dp"
+            app:boxCornerRadiusBottomStart="12dp"
+            app:boxCornerRadiusBottomEnd="12dp"
+            app:hintEnabled="false"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_estado"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Estado / Provincia"
+                android:textColor="#212121"
+                android:textColorHint="#AAAAAA"
+                android:textSize="14sp"
+                android:inputType="textCapWords"
+                android:padding="14dp" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- País -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_pais"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="20dp"
+            app:boxStrokeColor="#F5A623"
+            app:boxCornerRadiusTopStart="12dp"
+            app:boxCornerRadiusTopEnd="12dp"
+            app:boxCornerRadiusBottomStart="12dp"
+            app:boxCornerRadiusBottomEnd="12dp"
+            app:hintEnabled="false"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_pais"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="País"
+                android:textColor="#212121"
+                android:textColorHint="#AAAAAA"
+                android:textSize="14sp"
+                android:inputType="textCapWords"
+                android:padding="14dp" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Precio -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -163,17 +406,23 @@
             android:textColor="#212121"
             android:textSize="13sp"
             android:textStyle="bold"
-            android:paddingStart="16dp"
+            android:paddingStart="20dp"
             android:layout_marginBottom="4dp" />
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_precio"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
             android:layout_marginBottom="20dp"
             app:boxStrokeColor="#F5A623"
-            app:boxStrokeWidth="1dp"
+            app:boxCornerRadiusTopStart="12dp"
+            app:boxCornerRadiusTopEnd="12dp"
+            app:boxCornerRadiusBottomStart="12dp"
+            app:boxCornerRadiusBottomEnd="12dp"
+            app:startIconDrawable="@android:drawable/ic_menu_compass"
+            app:startIconTint="#F5A623"
             app:hintEnabled="false"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
@@ -181,15 +430,16 @@
                 android:id="@+id/et_precio"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Ej: 15000"
+                android:hint="Ej. 15000"
                 android:textColor="#212121"
                 android:textColorHint="#AAAAAA"
                 android:textSize="14sp"
-                android:inputType="numberDecimal" />
+                android:inputType="numberDecimal"
+                android:padding="14dp" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- ── Sección Fotos ── -->
+        <!-- Fotos -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -197,254 +447,73 @@
             android:textColor="#212121"
             android:textSize="13sp"
             android:textStyle="bold"
-            android:paddingStart="16dp"
+            android:paddingStart="20dp"
             android:layout_marginBottom="8dp" />
 
-        <!-- Grid 2x2 de fotos -->
         <GridLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="20dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="24dp"
             android:columnCount="2"
             android:rowCount="2"
             android:useDefaultMargins="false">
 
-            <!-- Foto 1 -->
-            <FrameLayout
-                android:id="@+id/frame_foto_1"
-                android:layout_width="0dp"
-                android:layout_height="100dp"
-                android:layout_columnWeight="1"
-                android:layout_rowWeight="1"
-                android:layout_margin="4dp"
-                android:background="#F2F2F2"
-                android:foreground="?attr/selectableItemBackground">
-
-                <ImageView
-                    android:id="@+id/iv_foto_1"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="centerCrop"
-                    android:visibility="gone" />
-
-                <LinearLayout
-                    android:id="@+id/placeholder_1"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:gravity="center">
-
-                    <ImageView
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:src="@android:drawable/ic_input_add"
-                        android:tint="#CCCCCC" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Agregar foto"
-                        android:textColor="#CCCCCC"
-                        android:textSize="11sp"
-                        android:layout_marginTop="4dp" />
-
+            <FrameLayout android:id="@+id/frame_foto_1" android:layout_width="0dp" android:layout_height="110dp" android:layout_columnWeight="1" android:layout_rowWeight="1" android:layout_margin="5dp" android:background="#F5F5F5" android:foreground="?attr/selectableItemBackground">
+                <ImageView android:id="@+id/iv_foto_1" android:layout_width="match_parent" android:layout_height="match_parent" android:scaleType="centerCrop" android:visibility="gone" />
+                <LinearLayout android:id="@+id/placeholder_1" android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical" android:gravity="center">
+                    <FrameLayout android:layout_width="48dp" android:layout_height="48dp" android:background="#FFF3E0"><ImageView android:layout_width="28dp" android:layout_height="28dp" android:src="@android:drawable/ic_menu_camera" android:tint="#F5A623" android:layout_gravity="center" /></FrameLayout>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Agregar foto" android:textColor="#AAAAAA" android:textSize="11sp" android:layout_marginTop="6dp" />
                 </LinearLayout>
-
-                <ImageView
-                    android:id="@+id/btn_remove_1"
-                    android:layout_width="22dp"
-                    android:layout_height="22dp"
-                    android:layout_gravity="top|end"
-                    android:layout_margin="4dp"
-                    android:src="@android:drawable/ic_menu_close_clear_cancel"
-                    android:tint="#FFFFFF"
-                    android:background="#88000000"
-                    android:visibility="gone"
-                    android:padding="3dp" />
-
+                <ImageView android:id="@+id/btn_remove_1" android:layout_width="22dp" android:layout_height="22dp" android:layout_gravity="top|end" android:layout_margin="4dp" android:src="@android:drawable/ic_menu_close_clear_cancel" android:tint="#FFFFFF" android:background="#88000000" android:visibility="gone" android:padding="3dp" />
             </FrameLayout>
 
-            <!-- Foto 2 -->
-            <FrameLayout
-                android:id="@+id/frame_foto_2"
-                android:layout_width="0dp"
-                android:layout_height="100dp"
-                android:layout_columnWeight="1"
-                android:layout_rowWeight="1"
-                android:layout_margin="4dp"
-                android:background="#F2F2F2"
-                android:foreground="?attr/selectableItemBackground">
-
-                <ImageView
-                    android:id="@+id/iv_foto_2"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="centerCrop"
-                    android:visibility="gone" />
-
-                <LinearLayout
-                    android:id="@+id/placeholder_2"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:gravity="center">
-
-                    <ImageView
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:src="@android:drawable/ic_input_add"
-                        android:tint="#CCCCCC" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Agregar foto"
-                        android:textColor="#CCCCCC"
-                        android:textSize="11sp"
-                        android:layout_marginTop="4dp" />
-
+            <FrameLayout android:id="@+id/frame_foto_2" android:layout_width="0dp" android:layout_height="110dp" android:layout_columnWeight="1" android:layout_rowWeight="1" android:layout_margin="5dp" android:background="#F5F5F5" android:foreground="?attr/selectableItemBackground">
+                <ImageView android:id="@+id/iv_foto_2" android:layout_width="match_parent" android:layout_height="match_parent" android:scaleType="centerCrop" android:visibility="gone" />
+                <LinearLayout android:id="@+id/placeholder_2" android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical" android:gravity="center">
+                    <FrameLayout android:layout_width="48dp" android:layout_height="48dp" android:background="#FFF3E0"><ImageView android:layout_width="28dp" android:layout_height="28dp" android:src="@android:drawable/ic_menu_camera" android:tint="#F5A623" android:layout_gravity="center" /></FrameLayout>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Agregar foto" android:textColor="#AAAAAA" android:textSize="11sp" android:layout_marginTop="6dp" />
                 </LinearLayout>
-
-                <ImageView
-                    android:id="@+id/btn_remove_2"
-                    android:layout_width="22dp"
-                    android:layout_height="22dp"
-                    android:layout_gravity="top|end"
-                    android:layout_margin="4dp"
-                    android:src="@android:drawable/ic_menu_close_clear_cancel"
-                    android:tint="#FFFFFF"
-                    android:background="#88000000"
-                    android:visibility="gone"
-                    android:padding="3dp" />
-
+                <ImageView android:id="@+id/btn_remove_2" android:layout_width="22dp" android:layout_height="22dp" android:layout_gravity="top|end" android:layout_margin="4dp" android:src="@android:drawable/ic_menu_close_clear_cancel" android:tint="#FFFFFF" android:background="#88000000" android:visibility="gone" android:padding="3dp" />
             </FrameLayout>
 
-            <!-- Foto 3 -->
-            <FrameLayout
-                android:id="@+id/frame_foto_3"
-                android:layout_width="0dp"
-                android:layout_height="100dp"
-                android:layout_columnWeight="1"
-                android:layout_rowWeight="1"
-                android:layout_margin="4dp"
-                android:background="#F2F2F2"
-                android:foreground="?attr/selectableItemBackground">
-
-                <ImageView
-                    android:id="@+id/iv_foto_3"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="centerCrop"
-                    android:visibility="gone" />
-
-                <LinearLayout
-                    android:id="@+id/placeholder_3"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:gravity="center">
-
-                    <ImageView
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:src="@android:drawable/ic_input_add"
-                        android:tint="#CCCCCC" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Agregar foto"
-                        android:textColor="#CCCCCC"
-                        android:textSize="11sp"
-                        android:layout_marginTop="4dp" />
-
+            <FrameLayout android:id="@+id/frame_foto_3" android:layout_width="0dp" android:layout_height="110dp" android:layout_columnWeight="1" android:layout_rowWeight="1" android:layout_margin="5dp" android:background="#F5F5F5" android:foreground="?attr/selectableItemBackground">
+                <ImageView android:id="@+id/iv_foto_3" android:layout_width="match_parent" android:layout_height="match_parent" android:scaleType="centerCrop" android:visibility="gone" />
+                <LinearLayout android:id="@+id/placeholder_3" android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical" android:gravity="center">
+                    <FrameLayout android:layout_width="48dp" android:layout_height="48dp" android:background="#FFF3E0"><ImageView android:layout_width="28dp" android:layout_height="28dp" android:src="@android:drawable/ic_menu_camera" android:tint="#F5A623" android:layout_gravity="center" /></FrameLayout>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Agregar foto" android:textColor="#AAAAAA" android:textSize="11sp" android:layout_marginTop="6dp" />
                 </LinearLayout>
-
-                <ImageView
-                    android:id="@+id/btn_remove_3"
-                    android:layout_width="22dp"
-                    android:layout_height="22dp"
-                    android:layout_gravity="top|end"
-                    android:layout_margin="4dp"
-                    android:src="@android:drawable/ic_menu_close_clear_cancel"
-                    android:tint="#FFFFFF"
-                    android:background="#88000000"
-                    android:visibility="gone"
-                    android:padding="3dp" />
-
+                <ImageView android:id="@+id/btn_remove_3" android:layout_width="22dp" android:layout_height="22dp" android:layout_gravity="top|end" android:layout_margin="4dp" android:src="@android:drawable/ic_menu_close_clear_cancel" android:tint="#FFFFFF" android:background="#88000000" android:visibility="gone" android:padding="3dp" />
             </FrameLayout>
 
-            <!-- Foto 4 -->
-            <FrameLayout
-                android:id="@+id/frame_foto_4"
-                android:layout_width="0dp"
-                android:layout_height="100dp"
-                android:layout_columnWeight="1"
-                android:layout_rowWeight="1"
-                android:layout_margin="4dp"
-                android:background="#F2F2F2"
-                android:foreground="?attr/selectableItemBackground">
-
-                <ImageView
-                    android:id="@+id/iv_foto_4"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="centerCrop"
-                    android:visibility="gone" />
-
-                <LinearLayout
-                    android:id="@+id/placeholder_4"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:gravity="center">
-
-                    <ImageView
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:src="@android:drawable/ic_input_add"
-                        android:tint="#CCCCCC" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Agregar foto"
-                        android:textColor="#CCCCCC"
-                        android:textSize="11sp"
-                        android:layout_marginTop="4dp" />
-
+            <FrameLayout android:id="@+id/frame_foto_4" android:layout_width="0dp" android:layout_height="110dp" android:layout_columnWeight="1" android:layout_rowWeight="1" android:layout_margin="5dp" android:background="#F5F5F5" android:foreground="?attr/selectableItemBackground">
+                <ImageView android:id="@+id/iv_foto_4" android:layout_width="match_parent" android:layout_height="match_parent" android:scaleType="centerCrop" android:visibility="gone" />
+                <LinearLayout android:id="@+id/placeholder_4" android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical" android:gravity="center">
+                    <FrameLayout android:layout_width="48dp" android:layout_height="48dp" android:background="#FFF3E0"><ImageView android:layout_width="28dp" android:layout_height="28dp" android:src="@android:drawable/ic_menu_camera" android:tint="#F5A623" android:layout_gravity="center" /></FrameLayout>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Agregar foto" android:textColor="#AAAAAA" android:textSize="11sp" android:layout_marginTop="6dp" />
                 </LinearLayout>
-
-                <ImageView
-                    android:id="@+id/btn_remove_4"
-                    android:layout_width="22dp"
-                    android:layout_height="22dp"
-                    android:layout_gravity="top|end"
-                    android:layout_margin="4dp"
-                    android:src="@android:drawable/ic_menu_close_clear_cancel"
-                    android:tint="#FFFFFF"
-                    android:background="#88000000"
-                    android:visibility="gone"
-                    android:padding="3dp" />
-
+                <ImageView android:id="@+id/btn_remove_4" android:layout_width="22dp" android:layout_height="22dp" android:layout_gravity="top|end" android:layout_margin="4dp" android:src="@android:drawable/ic_menu_close_clear_cancel" android:tint="#FFFFFF" android:background="#88000000" android:visibility="gone" android:padding="3dp" />
             </FrameLayout>
 
         </GridLayout>
 
         <!-- Botón publicar -->
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_publicar"
             android:layout_width="match_parent"
-            android:layout_height="52dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
+            android:layout_height="56dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
             android:text="PUBLICAR PROPIEDAD"
             android:textColor="#FFFFFF"
             android:textStyle="bold"
-            android:letterSpacing="0.05"
-            android:background="#F5A623" />
+            android:textSize="15sp"
+            app:backgroundTint="#F5A623"
+            app:icon="@android:drawable/ic_menu_send"
+            app:iconTint="#FFFFFF"
+            app:iconGravity="start"
+            app:cornerRadius="14dp" />
 
     </LinearLayout>
 

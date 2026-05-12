@@ -19,6 +19,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.tabs.TabLayout
+import com.google.android.material.textfield.TextInputLayout
 
 data class PropiedadItem(
     val nombre: String,
@@ -31,27 +32,21 @@ data class PropiedadItem(
 class PropiedadesFragment : Fragment() {
 
     private val propiedades = mutableListOf(
-        PropiedadItem("Local Comercial Centro", "Av. Constitución 100, Monterrey", "$15,000 MXN/mes", "Renta"),
-        PropiedadItem("Oficina San Pedro", "Blvd. Antonio L. Rodríguez 3000", "$25,000 MXN/mes", "Renta"),
-        PropiedadItem("Bodega Industrial", "Carretera a Laredo km 12", "$2,500,000 MXN", "Venta"),
-        PropiedadItem("Local en Plaza", "Plaza Fiesta San Agustín", "$18,000 MXN/mes", "Renta"),
-        PropiedadItem("Terreno Comercial", "Av. Eugenio Garza Sada", "$8,000,000 MXN", "Venta")
+        PropiedadItem("Local Comercial Centro", "Av. Constitución 100, Col. Centro, Monterrey, NL, México", "$15,000 MXN/mes", "Renta"),
+        PropiedadItem("Oficina San Pedro", "Blvd. Antonio L. Rodríguez 3000, Col. Santa María, San Pedro Garza García, NL, México", "$25,000 MXN/mes", "Renta"),
+        PropiedadItem("Bodega Industrial", "Carretera a Laredo km 12, Col. Industrial, Monterrey, NL, México", "$2,500,000 MXN", "Venta"),
+        PropiedadItem("Local en Plaza", "Plaza Fiesta San Agustín, Col. Valle Oriente, San Pedro Garza García, NL, México", "$18,000 MXN/mes", "Renta"),
+        PropiedadItem("Terreno Comercial", "Av. Eugenio Garza Sada 3000, Col. Tecnológico, Monterrey, NL, México", "$8,000,000 MXN", "Venta")
     )
 
     private lateinit var adapter: PropiedadAdapter
     private var currentFilter = "Todas"
 
-    // ── Estado de fotos ──────────────────────────────────────────────────────
     private val fotoUris = arrayOfNulls<Uri>(4)
     private var slotSeleccionado = 0
     private var dialogView: View? = null
 
-    private data class SlotIds(
-        val frame: Int,
-        val imageView: Int,
-        val placeholder: Int,
-        val btnRemove: Int
-    )
+    private data class SlotIds(val frame: Int, val imageView: Int, val placeholder: Int, val btnRemove: Int)
 
     private val slots = listOf(
         SlotIds(R.id.frame_foto_1, R.id.iv_foto_1, R.id.placeholder_1, R.id.btn_remove_1),
@@ -60,29 +55,18 @@ class PropiedadesFragment : Fragment() {
         SlotIds(R.id.frame_foto_4, R.id.iv_foto_4, R.id.placeholder_4, R.id.btn_remove_4)
     )
 
-    // ── Launcher de galería ──────────────────────────────────────────────────
     private val pickImageLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val uri = result.data?.data ?: return@registerForActivityResult
-                try {
-                    requireContext().contentResolver.takePersistableUriPermission(
-                        uri, Intent.FLAG_GRANT_READ_URI_PERMISSION
-                    )
-                } catch (_: Exception) {}
-
+                try { requireContext().contentResolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION) } catch (_: Exception) {}
                 fotoUris[slotSeleccionado] = uri
                 mostrarFotoEnSlot(slotSeleccionado, uri)
             }
         }
 
-    // ── Ciclo de vida ────────────────────────────────────────────────────────
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_propiedades, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
+        inflater.inflate(R.layout.fragment_propiedades, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -113,46 +97,65 @@ class PropiedadesFragment : Fragment() {
         btnAgregar.setOnClickListener { showAddPropertyDialog() }
     }
 
-    // ── Filtrado ─────────────────────────────────────────────────────────────
-
     private fun getFilteredList(): List<PropiedadItem> = when (currentFilter) {
         "Renta" -> propiedades.filter { it.tipo == "Renta" }
         "Venta" -> propiedades.filter { it.tipo == "Venta" }
         else    -> propiedades.toList()
     }
 
-    // ── Diálogo ──────────────────────────────────────────────────────────────
-
     private fun showAddPropertyDialog() {
         fotoUris.fill(null)
 
-        val inflatedView = LayoutInflater.from(requireContext())
-            .inflate(R.layout.dialog_agregar_propiedad, null)
+        val inflatedView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_agregar_propiedad, null)
         dialogView = inflatedView
 
         val dialog = android.app.AlertDialog.Builder(requireContext())
             .setView(inflatedView)
             .create()
 
-        val toggleGroup = inflatedView.findViewById<com.google.android.material.button.MaterialButtonToggleGroup>(R.id.toggle_tipo)
-        val etNombre    = inflatedView.findViewById<com.google.android.material.textfield.TextInputEditText>(R.id.et_nombre)
-        val etDireccion = inflatedView.findViewById<com.google.android.material.textfield.TextInputEditText>(R.id.et_direccion)
-        val etPrecio    = inflatedView.findViewById<com.google.android.material.textfield.TextInputEditText>(R.id.et_precio)
-        val btnPublicar = inflatedView.findViewById<android.widget.Button>(R.id.btn_publicar)
+        // Campos
+        val toggleGroup  = inflatedView.findViewById<com.google.android.material.button.MaterialButtonToggleGroup>(R.id.toggle_tipo)
+        val btnPublicar  = inflatedView.findViewById<com.google.android.material.button.MaterialButton>(R.id.btn_publicar)
+        val btnCerrar    = inflatedView.findViewById<ImageView>(R.id.btn_cerrar_dialog)
+
+        val tilNombre    = inflatedView.findViewById<TextInputLayout>(R.id.til_nombre)
+        val tilCalle     = inflatedView.findViewById<TextInputLayout>(R.id.til_calle)
+        val tilNumExt    = inflatedView.findViewById<TextInputLayout>(R.id.til_numero_ext)
+        val tilNumInt    = inflatedView.findViewById<TextInputLayout>(R.id.til_numero_int)
+        val tilColonia   = inflatedView.findViewById<TextInputLayout>(R.id.til_colonia)
+        val tilCiudad    = inflatedView.findViewById<TextInputLayout>(R.id.til_ciudad)
+        val tilCp        = inflatedView.findViewById<TextInputLayout>(R.id.til_cp)
+        val tilEstado    = inflatedView.findViewById<TextInputLayout>(R.id.til_estado)
+        val tilPais      = inflatedView.findViewById<TextInputLayout>(R.id.til_pais)
+        val tilPrecio    = inflatedView.findViewById<TextInputLayout>(R.id.til_precio)
 
         toggleGroup.check(R.id.btn_venta)
+        btnCerrar.setOnClickListener { dialog.dismiss() }
 
         configurarSlotsFoto(inflatedView)
 
         btnPublicar.setOnClickListener {
-            val nombre    = etNombre.text?.toString()?.trim() ?: ""
-            val direccion = etDireccion.text?.toString()?.trim() ?: ""
-            val precio    = etPrecio.text?.toString()?.trim() ?: ""
+            val nombre   = tilNombre?.editText?.text?.toString()?.trim() ?: ""
+            val calle    = tilCalle?.editText?.text?.toString()?.trim() ?: ""
+            val numExt   = tilNumExt?.editText?.text?.toString()?.trim() ?: ""
+            val numInt   = tilNumInt?.editText?.text?.toString()?.trim() ?: ""
+            val colonia  = tilColonia?.editText?.text?.toString()?.trim() ?: ""
+            val ciudad   = tilCiudad?.editText?.text?.toString()?.trim() ?: ""
+            val cp       = tilCp?.editText?.text?.toString()?.trim() ?: ""
+            val estado   = tilEstado?.editText?.text?.toString()?.trim() ?: ""
+            val pais     = tilPais?.editText?.text?.toString()?.trim() ?: ""
+            val precio   = tilPrecio?.editText?.text?.toString()?.trim() ?: ""
 
-            if (nombre.isEmpty() || direccion.isEmpty() || precio.isEmpty()) {
-                Toast.makeText(requireContext(), "Completa todos los campos", Toast.LENGTH_SHORT).show()
+            if (nombre.isEmpty() || calle.isEmpty() || numExt.isEmpty() || ciudad.isEmpty() || precio.isEmpty()) {
+                Toast.makeText(requireContext(), "Completa los campos obligatorios", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
+
+            // Construir dirección completa
+            val numStr     = if (numInt.isNotEmpty()) "$numExt Int. $numInt" else numExt
+            val coloniaStr = if (colonia.isNotEmpty()) "Col. $colonia, " else ""
+            val cpStr      = if (cp.isNotEmpty()) "C.P. $cp, " else ""
+            val direccionCompleta = "$calle $numStr, ${coloniaStr}${ciudad}, $estado $cpStr$pais".trim().trimEnd(',')
 
             val tipoSeleccionado = when (toggleGroup.checkedButtonId) {
                 R.id.btn_renta -> "Renta"
@@ -161,16 +164,13 @@ class PropiedadesFragment : Fragment() {
 
             val fotosGuardadas = fotoUris.filterNotNull()
 
-            propiedades.add(
-                index = 0,
-                element = PropiedadItem(
-                    nombre    = nombre,
-                    direccion = direccion,
-                    precio    = "$$precio MXN${if (tipoSeleccionado == "Renta") "/mes" else ""}",
-                    tipo      = tipoSeleccionado,
-                    fotos     = fotosGuardadas
-                )
-            )
+            propiedades.add(0, PropiedadItem(
+                nombre    = nombre,
+                direccion = direccionCompleta,
+                precio    = "$$precio MXN${if (tipoSeleccionado == "Renta") "/mes" else ""}",
+                tipo      = tipoSeleccionado,
+                fotos     = fotosGuardadas
+            ))
 
             adapter.updateData(getFilteredList())
             dialog.dismiss()
@@ -184,16 +184,12 @@ class PropiedadesFragment : Fragment() {
         dialog.show()
     }
 
-    // ── Lógica de fotos ──────────────────────────────────────────────────────
-
     private fun configurarSlotsFoto(root: View) {
         slots.forEachIndexed { index, ids ->
-            // Click en el FrameLayout completo → abrir galería
             root.findViewById<FrameLayout>(ids.frame)?.setOnClickListener {
                 slotSeleccionado = index
                 abrirGaleria()
             }
-            // Click en el botón X → eliminar foto
             root.findViewById<ImageView>(ids.btnRemove)?.setOnClickListener {
                 fotoUris[index] = null
                 limpiarSlot(index)
@@ -202,37 +198,25 @@ class PropiedadesFragment : Fragment() {
     }
 
     private fun abrirGaleria() {
-        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI).apply {
-            type = "image/*"
-        }
+        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI).apply { type = "image/*" }
         pickImageLauncher.launch(intent)
     }
 
     private fun mostrarFotoEnSlot(index: Int, uri: Uri) {
         val root = dialogView ?: return
         val ids  = slots.getOrNull(index) ?: return
-
-        root.findViewById<ImageView>(ids.imageView)?.apply {
-            setImageURI(uri)
-            visibility = View.VISIBLE
-        }
+        root.findViewById<ImageView>(ids.imageView)?.apply { setImageURI(uri); visibility = View.VISIBLE }
         root.findViewById<LinearLayout>(ids.placeholder)?.visibility = View.GONE
-        root.findViewById<ImageView>(ids.btnRemove)?.visibility      = View.VISIBLE
+        root.findViewById<ImageView>(ids.btnRemove)?.visibility = View.VISIBLE
     }
 
     private fun limpiarSlot(index: Int) {
         val root = dialogView ?: return
         val ids  = slots.getOrNull(index) ?: return
-
-        root.findViewById<ImageView>(ids.imageView)?.apply {
-            setImageURI(null)
-            visibility = View.GONE
-        }
+        root.findViewById<ImageView>(ids.imageView)?.apply { setImageURI(null); visibility = View.GONE }
         root.findViewById<LinearLayout>(ids.placeholder)?.visibility = View.VISIBLE
-        root.findViewById<ImageView>(ids.btnRemove)?.visibility      = View.GONE
+        root.findViewById<ImageView>(ids.btnRemove)?.visibility = View.GONE
     }
-
-    // ── Adapter ──────────────────────────────────────────────────────────────
 
     inner class PropiedadAdapter(
         private var items: List<PropiedadItem>,
@@ -246,25 +230,17 @@ class PropiedadesFragment : Fragment() {
             val btnEliminar: ImageView = view.findViewById(R.id.btn_eliminar)
         }
 
-        fun updateData(newItems: List<PropiedadItem>) {
-            items = newItems
-            notifyDataSetChanged()
-        }
+        fun updateData(newItems: List<PropiedadItem>) { items = newItems; notifyDataSetChanged() }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
-            ViewHolder(
-                LayoutInflater.from(parent.context)
-                    .inflate(R.layout.item_propiedad, parent, false)
-            )
+            ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_propiedad, parent, false))
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             val item = items[position]
             holder.tvNombre.text = item.nombre
             holder.tvPrecio.text = "Precio: ${item.precio}"
             holder.tvTipo.text   = if (item.tipo == "Renta") "Renta 🏠" else "Venta 🏢"
-            holder.tvTipo.setBackgroundResource(
-                if (item.tipo == "Renta") R.drawable.chip_renta_bg else R.drawable.chip_venta_bg
-            )
+            holder.tvTipo.setBackgroundResource(if (item.tipo == "Renta") R.drawable.chip_renta_bg else R.drawable.chip_venta_bg)
             holder.btnEliminar.setOnClickListener { onDelete(holder.adapterPosition) }
         }
 
