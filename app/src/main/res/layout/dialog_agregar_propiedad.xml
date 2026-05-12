@@ -4,22 +4,25 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#FAFAFA">
+    android:background="#FFFFFF"
+    android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingBottom="28dp">
+        android:paddingBottom="24dp">
 
+        <!-- ── HANDLE ── -->
         <View
             android:layout_width="40dp"
             android:layout_height="4dp"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="4dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="6dp"
             android:background="#DDDDDD" />
 
+        <!-- ── HEADER ── -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -27,8 +30,8 @@
             android:gravity="center_vertical"
             android:paddingStart="20dp"
             android:paddingEnd="16dp"
-            android:paddingTop="8dp"
-            android:paddingBottom="12dp">
+            android:paddingTop="6dp"
+            android:paddingBottom="16dp">
 
             <TextView
                 android:layout_width="0dp"
@@ -36,8 +39,9 @@
                 android:layout_weight="1"
                 android:text="Publicar propiedad"
                 android:textColor="#1A1A1A"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:fontFamily="sans-serif-medium" />
 
             <ImageView
                 android:id="@+id/btn_cerrar_dialog"
@@ -51,471 +55,683 @@
 
         </LinearLayout>
 
-        <!-- CARD 1 -->
-        <androidx.cardview.widget.CardView
+        <!-- ══════════════════════════════════════════════
+             SECCIÓN 1: DATOS GENERALES
+        ══════════════════════════════════════════════ -->
+
+        <!-- Separador de sección -->
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="12dp"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="4dp"
-            app:cardBackgroundColor="#FFFFFF">
+            android:text="  DATOS GENERALES"
+            android:textColor="#FFFFFF"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.1"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:background="#F5A623" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="8dp">
+
+            <!-- Nombre de la propiedad -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nombre de la propiedad *"
+                android:textColor="#555555"
+                android:textSize="12sp"
+                android:layout_marginBottom="4dp" />
+
+            <EditText
+                android:id="@+id/et_nombre"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@drawable/bg_field"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:textColor="#1A1A1A"
+                android:textColorHint="#AAAAAA"
+                android:textSize="14sp"
+                android:hint="Ej: Local Comercial Centro"
+                android:inputType="textCapWords"
+                android:layout_marginBottom="14dp" />
+
+            <!-- Descripción -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Descripción"
+                android:textColor="#555555"
+                android:textSize="12sp"
+                android:layout_marginBottom="4dp" />
+
+            <EditText
+                android:id="@+id/et_descripcion"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:background="@drawable/bg_field"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:textColor="#1A1A1A"
+                android:textColorHint="#AAAAAA"
+                android:textSize="14sp"
+                android:hint="Descripción de la propiedad..."
+                android:inputType="textMultiLine"
+                android:gravity="top"
+                android:minLines="2"
+                android:layout_marginBottom="14dp" />
+
+            <!-- Tipo de operación -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tipo de operación"
+                android:textColor="#555555"
+                android:textSize="12sp"
+                android:layout_marginBottom="8dp" />
+
+            <com.google.android.material.button.MaterialButtonToggleGroup
+                android:id="@+id/toggle_tipo"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginBottom="14dp"
+                app:singleSelection="true"
+                app:selectionRequired="true">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_venta"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="VENTA"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_renta"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="RENTA"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+
+            </com.google.android.material.button.MaterialButtonToggleGroup>
+
+            <!-- Precio -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Precio (MXN) *"
+                android:textColor="#555555"
+                android:textSize="12sp"
+                android:layout_marginBottom="4dp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/til_nombre"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    app:boxStrokeColor="#F5A623">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/et_nombre"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Nombre de la propiedad *" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/til_descripcion"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    app:boxStrokeColor="#F5A623">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/et_descripcion"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Descripción"
-                        android:minLines="2" />
-
-                </com.google.android.material.textfield.TextInputLayout>
+                android:layout_height="48dp"
+                android:orientation="horizontal"
+                android:background="@drawable/bg_field"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="8dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Tipo de operación"
-                    android:textColor="#555555"
-                    android:textSize="12sp"
-                    android:layout_marginBottom="8dp" />
+                    android:text="$"
+                    android:textColor="#F5A623"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="4dp" />
 
-                <com.google.android.material.button.MaterialButtonToggleGroup
-                    android:id="@+id/toggle_tipo"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    app:singleSelection="true"
-                    app:selectionRequired="true">
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btn_venta"
-                        style="?attr/materialButtonOutlinedStyle"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="VENTA" />
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btn_renta"
-                        style="?attr/materialButtonOutlinedStyle"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="RENTA" />
-
-                </com.google.android.material.button.MaterialButtonToggleGroup>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/til_precio"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:prefixText="$"
-                    app:boxStrokeColor="#F5A623">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/et_precio"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Precio (MXN) *"
-                        android:inputType="numberDecimal" />
-
-                </com.google.android.material.textfield.TextInputLayout>
+                <EditText
+                    android:id="@+id/et_precio"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@android:color/transparent"
+                    android:paddingEnd="12dp"
+                    android:textColor="#1A1A1A"
+                    android:textColorHint="#AAAAAA"
+                    android:textSize="14sp"
+                    android:hint="0.00"
+                    android:inputType="numberDecimal" />
 
             </LinearLayout>
 
-        </androidx.cardview.widget.CardView>
+        </LinearLayout>
 
-        <!-- CARD 2 -->
-        <androidx.cardview.widget.CardView
+        <!-- ══════════════════════════════════════════════
+             SECCIÓN 2: DIRECCIÓN
+        ══════════════════════════════════════════════ -->
+
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="12dp"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="4dp"
-            app:cardBackgroundColor="#FFFFFF">
+            android:text="  DIRECCIÓN"
+            android:textColor="#FFFFFF"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.1"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:background="#F5A623"
+            android:layout_marginTop="8dp" />
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="8dp">
+
+            <!-- Calle -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Calle *"
+                android:textColor="#555555"
+                android:textSize="12sp"
+                android:layout_marginBottom="4dp" />
+
+            <EditText
+                android:id="@+id/et_calle"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@drawable/bg_field"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:textColor="#1A1A1A"
+                android:textColorHint="#AAAAAA"
+                android:textSize="14sp"
+                android:hint="Nombre de la calle"
+                android:inputType="textCapWords"
+                android:layout_marginBottom="14dp" />
+
+            <!-- Núm. Ext / Núm. Int -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Dirección"
-                    android:textStyle="bold"
-                    android:layout_marginBottom="12dp" />
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/til_calle"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/et_calle"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Calle *" />
-
-                </com.google.android.material.textfield.TextInputLayout>
+                android:orientation="horizontal"
+                android:layout_marginBottom="14dp">
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginTop="10dp">
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:layout_marginEnd="8dp">
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/til_numero_ext"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                        android:layout_width="0dp"
+                    <TextView
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginEnd="6dp">
+                        android:text="Núm. Ext *"
+                        android:textColor="#555555"
+                        android:textSize="12sp"
+                        android:layout_marginBottom="4dp" />
 
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/et_numero_ext"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="Núm. Ext *" />
-
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/til_numero_int"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginStart="6dp">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/et_numero_int"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="Núm. Int" />
-
-                    </com.google.android.material.textfield.TextInputLayout>
+                    <EditText
+                        android:id="@+id/et_numero_ext"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:background="@drawable/bg_field"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="12dp"
+                        android:textColor="#1A1A1A"
+                        android:textColorHint="#AAAAAA"
+                        android:textSize="14sp"
+                        android:hint="100"
+                        android:inputType="text" />
 
                 </LinearLayout>
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/til_colonia"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/et_colonia"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Colonia" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginTop="10dp">
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:layout_marginStart="8dp">
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/til_cp"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                        android:layout_width="0dp"
+                    <TextView
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginEnd="6dp">
+                        android:text="Núm. Int"
+                        android:textColor="#555555"
+                        android:textSize="12sp"
+                        android:layout_marginBottom="4dp" />
 
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/et_cp"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="C.P." />
-
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/til_estado"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="2"
-                        android:layout_marginStart="6dp">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/et_estado"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="Estado" />
-
-                    </com.google.android.material.textfield.TextInputLayout>
+                    <EditText
+                        android:id="@+id/et_numero_int"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:background="@drawable/bg_field"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="12dp"
+                        android:textColor="#1A1A1A"
+                        android:textColorHint="#AAAAAA"
+                        android:textSize="14sp"
+                        android:hint="Opcional"
+                        android:inputType="text" />
 
                 </LinearLayout>
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                    android:layout_marginTop="10dp">
-
-                    <AutoCompleteTextView
-                        android:id="@+id/et_ciudad"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Ciudad *" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                    android:layout_marginTop="10dp">
-
-                    <AutoCompleteTextView
-                        android:id="@+id/et_pais"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="País" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
             </LinearLayout>
 
-        </androidx.cardview.widget.CardView>
+            <!-- Colonia -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Colonia"
+                android:textColor="#555555"
+                android:textSize="12sp"
+                android:layout_marginBottom="4dp" />
 
-        <!-- CARD FOTOS -->
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            app:cardCornerRadius="16dp">
+            <EditText
+                android:id="@+id/et_colonia"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@drawable/bg_field"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:textColor="#1A1A1A"
+                android:textColorHint="#AAAAAA"
+                android:textSize="14sp"
+                android:hint="Nombre de la colonia"
+                android:inputType="textCapWords"
+                android:layout_marginBottom="14dp" />
 
+            <!-- C.P. / Estado -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
+                android:orientation="horizontal"
+                android:layout_marginBottom="14dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Fotos"
-                    android:textStyle="bold"
-                    android:layout_marginBottom="12dp" />
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:layout_marginEnd="8dp">
 
-                <GridLayout
-                    android:layout_width="match_parent"
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="C.P."
+                        android:textColor="#555555"
+                        android:textSize="12sp"
+                        android:layout_marginBottom="4dp" />
+
+                    <EditText
+                        android:id="@+id/et_cp"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:background="@drawable/bg_field"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="12dp"
+                        android:textColor="#1A1A1A"
+                        android:textColorHint="#AAAAAA"
+                        android:textSize="14sp"
+                        android:hint="64000"
+                        android:inputType="number" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:columnCount="2">
+                    android:layout_weight="2"
+                    android:orientation="vertical"
+                    android:layout_marginStart="8dp">
 
-                    <!-- FOTO 1 -->
-                    <FrameLayout
-                        android:id="@+id/frame_foto_1"
-                        android:layout_width="0dp"
-                        android:layout_height="120dp"
-                        android:layout_columnWeight="1"
-                        android:layout_margin="4dp"
-                        android:background="#EEEEEE">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Estado"
+                        android:textColor="#555555"
+                        android:textSize="12sp"
+                        android:layout_marginBottom="4dp" />
 
-                        <ImageView
-                            android:id="@+id/iv_foto_1"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:scaleType="centerCrop"
-                            android:visibility="gone" />
+                    <EditText
+                        android:id="@+id/et_estado"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:background="@drawable/bg_field"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="12dp"
+                        android:textColor="#1A1A1A"
+                        android:textColorHint="#AAAAAA"
+                        android:textSize="14sp"
+                        android:hint="Nuevo León"
+                        android:inputType="textCapWords" />
 
-                        <LinearLayout
-                            android:id="@+id/placeholder_1"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:gravity="center"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Foto 1" />
-                        </LinearLayout>
-
-                        <ImageView
-                            android:id="@+id/btn_remove_1"
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:layout_gravity="top|end"
-                            android:src="@android:drawable/ic_menu_close_clear_cancel"
-                            android:visibility="gone" />
-
-                    </FrameLayout>
-
-                    <!-- FOTO 2 -->
-                    <FrameLayout
-                        android:id="@+id/frame_foto_2"
-                        android:layout_width="0dp"
-                        android:layout_height="120dp"
-                        android:layout_columnWeight="1"
-                        android:layout_margin="4dp"
-                        android:background="#EEEEEE">
-
-                        <ImageView
-                            android:id="@+id/iv_foto_2"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:scaleType="centerCrop"
-                            android:visibility="gone" />
-
-                        <LinearLayout
-                            android:id="@+id/placeholder_2"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:gravity="center"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Foto 2" />
-                        </LinearLayout>
-
-                        <ImageView
-                            android:id="@+id/btn_remove_2"
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:layout_gravity="top|end"
-                            android:src="@android:drawable/ic_menu_close_clear_cancel"
-                            android:visibility="gone" />
-
-                    </FrameLayout>
-
-                    <!-- FOTO 3 -->
-                    <FrameLayout
-                        android:id="@+id/frame_foto_3"
-                        android:layout_width="0dp"
-                        android:layout_height="120dp"
-                        android:layout_columnWeight="1"
-                        android:layout_margin="4dp"
-                        android:background="#EEEEEE">
-
-                        <ImageView
-                            android:id="@+id/iv_foto_3"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:scaleType="centerCrop"
-                            android:visibility="gone" />
-
-                        <LinearLayout
-                            android:id="@+id/placeholder_3"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:gravity="center"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Foto 3" />
-                        </LinearLayout>
-
-                        <ImageView
-                            android:id="@+id/btn_remove_3"
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:layout_gravity="top|end"
-                            android:src="@android:drawable/ic_menu_close_clear_cancel"
-                            android:visibility="gone" />
-
-                    </FrameLayout>
-
-                    <!-- FOTO 4 -->
-                    <FrameLayout
-                        android:id="@+id/frame_foto_4"
-                        android:layout_width="0dp"
-                        android:layout_height="120dp"
-                        android:layout_columnWeight="1"
-                        android:layout_margin="4dp"
-                        android:background="#EEEEEE">
-
-                        <ImageView
-                            android:id="@+id/iv_foto_4"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:scaleType="centerCrop"
-                            android:visibility="gone" />
-
-                        <LinearLayout
-                            android:id="@+id/placeholder_4"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:gravity="center"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Foto 4" />
-                        </LinearLayout>
-
-                        <ImageView
-                            android:id="@+id/btn_remove_4"
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:layout_gravity="top|end"
-                            android:src="@android:drawable/ic_menu_close_clear_cancel"
-                            android:visibility="gone" />
-
-                    </FrameLayout>
-
-                </GridLayout>
+                </LinearLayout>
 
             </LinearLayout>
 
-        </androidx.cardview.widget.CardView>
+            <!-- Ciudad -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ciudad *"
+                android:textColor="#555555"
+                android:textSize="12sp"
+                android:layout_marginBottom="4dp" />
 
+            <AutoCompleteTextView
+                android:id="@+id/et_ciudad"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@drawable/bg_field"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:textColor="#1A1A1A"
+                android:textColorHint="#AAAAAA"
+                android:textSize="14sp"
+                android:hint="Selecciona o escribe ciudad"
+                android:completionThreshold="1"
+                android:layout_marginBottom="14dp" />
+
+            <!-- País -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="País"
+                android:textColor="#555555"
+                android:textSize="12sp"
+                android:layout_marginBottom="4dp" />
+
+            <AutoCompleteTextView
+                android:id="@+id/et_pais"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@drawable/bg_field"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:textColor="#1A1A1A"
+                android:textColorHint="#AAAAAA"
+                android:textSize="14sp"
+                android:hint="Selecciona país"
+                android:completionThreshold="1"
+                android:layout_marginBottom="8dp" />
+
+        </LinearLayout>
+
+        <!-- ══════════════════════════════════════════════
+             SECCIÓN 3: FOTOS
+        ══════════════════════════════════════════════ -->
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="  FOTOS (máx. 4)"
+            android:textColor="#FFFFFF"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.1"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:background="#F5A623"
+            android:layout_marginTop="8dp" />
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:columnCount="2"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="8dp">
+
+            <!-- FOTO 1 -->
+            <FrameLayout
+                android:id="@+id/frame_foto_1"
+                android:layout_width="0dp"
+                android:layout_height="110dp"
+                android:layout_columnWeight="1"
+                android:layout_margin="4dp"
+                android:background="@drawable/bg_photo_slot"
+                android:foreground="?attr/selectableItemBackground">
+
+                <ImageView
+                    android:id="@+id/iv_foto_1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:visibility="gone" />
+
+                <LinearLayout
+                    android:id="@+id/placeholder_1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:src="@android:drawable/ic_menu_camera"
+                        app:tint="#CCCCCC" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Foto 1"
+                        android:textColor="#AAAAAA"
+                        android:textSize="12sp"
+                        android:layout_marginTop="4dp" />
+
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/btn_remove_1"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="top|end"
+                    android:layout_margin="4dp"
+                    android:src="@android:drawable/ic_menu_close_clear_cancel"
+                    android:background="@drawable/bg_remove_btn"
+                    android:padding="4dp"
+                    android:visibility="gone"
+                    app:tint="#FFFFFF" />
+
+            </FrameLayout>
+
+            <!-- FOTO 2 -->
+            <FrameLayout
+                android:id="@+id/frame_foto_2"
+                android:layout_width="0dp"
+                android:layout_height="110dp"
+                android:layout_columnWeight="1"
+                android:layout_margin="4dp"
+                android:background="@drawable/bg_photo_slot"
+                android:foreground="?attr/selectableItemBackground">
+
+                <ImageView
+                    android:id="@+id/iv_foto_2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:visibility="gone" />
+
+                <LinearLayout
+                    android:id="@+id/placeholder_2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:src="@android:drawable/ic_menu_camera"
+                        app:tint="#CCCCCC" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Foto 2"
+                        android:textColor="#AAAAAA"
+                        android:textSize="12sp"
+                        android:layout_marginTop="4dp" />
+
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/btn_remove_2"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="top|end"
+                    android:layout_margin="4dp"
+                    android:src="@android:drawable/ic_menu_close_clear_cancel"
+                    android:background="@drawable/bg_remove_btn"
+                    android:padding="4dp"
+                    android:visibility="gone"
+                    app:tint="#FFFFFF" />
+
+            </FrameLayout>
+
+            <!-- FOTO 3 -->
+            <FrameLayout
+                android:id="@+id/frame_foto_3"
+                android:layout_width="0dp"
+                android:layout_height="110dp"
+                android:layout_columnWeight="1"
+                android:layout_margin="4dp"
+                android:background="@drawable/bg_photo_slot"
+                android:foreground="?attr/selectableItemBackground">
+
+                <ImageView
+                    android:id="@+id/iv_foto_3"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:visibility="gone" />
+
+                <LinearLayout
+                    android:id="@+id/placeholder_3"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:src="@android:drawable/ic_menu_camera"
+                        app:tint="#CCCCCC" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Foto 3"
+                        android:textColor="#AAAAAA"
+                        android:textSize="12sp"
+                        android:layout_marginTop="4dp" />
+
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/btn_remove_3"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="top|end"
+                    android:layout_margin="4dp"
+                    android:src="@android:drawable/ic_menu_close_clear_cancel"
+                    android:background="@drawable/bg_remove_btn"
+                    android:padding="4dp"
+                    android:visibility="gone"
+                    app:tint="#FFFFFF" />
+
+            </FrameLayout>
+
+            <!-- FOTO 4 -->
+            <FrameLayout
+                android:id="@+id/frame_foto_4"
+                android:layout_width="0dp"
+                android:layout_height="110dp"
+                android:layout_columnWeight="1"
+                android:layout_margin="4dp"
+                android:background="@drawable/bg_photo_slot"
+                android:foreground="?attr/selectableItemBackground">
+
+                <ImageView
+                    android:id="@+id/iv_foto_4"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:visibility="gone" />
+
+                <LinearLayout
+                    android:id="@+id/placeholder_4"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:src="@android:drawable/ic_menu_camera"
+                        app:tint="#CCCCCC" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Foto 4"
+                        android:textColor="#AAAAAA"
+                        android:textSize="12sp"
+                        android:layout_marginTop="4dp" />
+
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/btn_remove_4"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="top|end"
+                    android:layout_margin="4dp"
+                    android:src="@android:drawable/ic_menu_close_clear_cancel"
+                    android:background="@drawable/bg_remove_btn"
+                    android:padding="4dp"
+                    android:visibility="gone"
+                    app:tint="#FFFFFF" />
+
+            </FrameLayout>
+
+        </GridLayout>
+
+        <!-- ── BOTÓN PUBLICAR ── -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_publicar"
             android:layout_width="match_parent"
             android:layout_height="52dp"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
+            android:layout_marginTop="20dp"
             android:text="PUBLICAR PROPIEDAD"
-            app:backgroundTint="#F5A623" />
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:textSize="14sp"
+            android:letterSpacing="0.05"
+            app:backgroundTint="#F5A623"
+            app:cornerRadius="12dp"
+            app:elevation="0dp" />
 
     </LinearLayout>
 

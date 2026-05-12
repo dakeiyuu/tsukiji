@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
+import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -21,8 +22,8 @@ import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.button.MaterialButtonToggleGroup
 import com.google.android.material.tabs.TabLayout
-import com.google.android.material.textfield.TextInputLayout
 
 data class PropiedadItem(
     val nombre: String,
@@ -137,7 +138,7 @@ class PropiedadesFragment : Fragment() {
         else    -> propiedades.toList()
     }
 
-    // ── Dialog de detalle ─────────────────────────────────────────────────────
+    // ── Dialog detalle ────────────────────────────────────────────────────────
 
     private fun showDetalleDialog(propiedad: PropiedadItem) {
         val view = LayoutInflater.from(requireContext())
@@ -158,7 +159,6 @@ class PropiedadesFragment : Fragment() {
             if (propiedad.tipo == "Renta") R.drawable.chip_renta_bg else R.drawable.chip_venta_bg
         )
 
-        // Descripción
         val cardDesc = view.findViewById<CardView>(R.id.card_descripcion)
         val tvDesc   = view.findViewById<TextView>(R.id.tv_detalle_descripcion)
         if (propiedad.descripcion.isNotEmpty()) {
@@ -168,7 +168,6 @@ class PropiedadesFragment : Fragment() {
             cardDesc.visibility = View.GONE
         }
 
-        // Fotos grandes
         val llFotos    = view.findViewById<LinearLayout>(R.id.ll_fotos)
         val llSinFotos = view.findViewById<LinearLayout>(R.id.ll_sin_fotos)
         val hsvFotos   = view.findViewById<View>(R.id.hsv_fotos)
@@ -213,31 +212,28 @@ class PropiedadesFragment : Fragment() {
             .setView(inflatedView)
             .create()
 
-        val toggleGroup = inflatedView.findViewById<com.google.android.material.button.MaterialButtonToggleGroup>(R.id.toggle_tipo)
-        val btnPublicar = inflatedView.findViewById<com.google.android.material.button.MaterialButton>(R.id.btn_publicar)
-        val btnCerrar   = inflatedView.findViewById<ImageView>(R.id.btn_cerrar_dialog)
+        // Referencias directas a EditText (sin TextInputLayout)
+        val etNombre      = inflatedView.findViewById<EditText>(R.id.et_nombre)
+        val etDescripcion = inflatedView.findViewById<EditText>(R.id.et_descripcion)
+        val etCalle       = inflatedView.findViewById<EditText>(R.id.et_calle)
+        val etNumExt      = inflatedView.findViewById<EditText>(R.id.et_numero_ext)
+        val etNumInt      = inflatedView.findViewById<EditText>(R.id.et_numero_int)
+        val etColonia     = inflatedView.findViewById<EditText>(R.id.et_colonia)
+        val etCp          = inflatedView.findViewById<EditText>(R.id.et_cp)
+        val etEstado      = inflatedView.findViewById<EditText>(R.id.et_estado)
+        val etPrecio      = inflatedView.findViewById<EditText>(R.id.et_precio)
+        val actvCiudad    = inflatedView.findViewById<AutoCompleteTextView>(R.id.et_ciudad)
+        val actvPais      = inflatedView.findViewById<AutoCompleteTextView>(R.id.et_pais)
+        val toggleGroup   = inflatedView.findViewById<MaterialButtonToggleGroup>(R.id.toggle_tipo)
+        val btnPublicar   = inflatedView.findViewById<com.google.android.material.button.MaterialButton>(R.id.btn_publicar)
+        val btnCerrar     = inflatedView.findViewById<ImageView>(R.id.btn_cerrar_dialog)
 
-        val tilNombre      = inflatedView.findViewById<TextInputLayout>(R.id.til_nombre)
-        val tilDescripcion = inflatedView.findViewById<TextInputLayout>(R.id.til_descripcion)
-        val tilCalle       = inflatedView.findViewById<TextInputLayout>(R.id.til_calle)
-        val tilNumExt      = inflatedView.findViewById<TextInputLayout>(R.id.til_numero_ext)
-        val tilNumInt      = inflatedView.findViewById<TextInputLayout>(R.id.til_numero_int)
-        val tilColonia     = inflatedView.findViewById<TextInputLayout>(R.id.til_colonia)
-        val tilCp          = inflatedView.findViewById<TextInputLayout>(R.id.til_cp)
-        val tilEstado      = inflatedView.findViewById<TextInputLayout>(R.id.til_estado)
-        val tilPrecio      = inflatedView.findViewById<TextInputLayout>(R.id.til_precio)
-
-        val actvCiudad = inflatedView.findViewById<AutoCompleteTextView>(R.id.et_ciudad)
-        val actvPais   = inflatedView.findViewById<AutoCompleteTextView>(R.id.et_pais)
-
+        // Dropdown país
         val paisAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, paises)
         actvPais.setAdapter(paisAdapter)
-
         actvPais.setOnItemClickListener { _, _, position, _ ->
-            val paisSeleccionado = paises[position]
-            actualizarDropdownCiudad(actvCiudad, paisSeleccionado)
+            actualizarDropdownCiudad(actvCiudad, paises[position])
         }
-
         actualizarDropdownCiudad(actvCiudad, null)
 
         toggleGroup.check(R.id.btn_venta)
@@ -246,26 +242,26 @@ class PropiedadesFragment : Fragment() {
         configurarSlotsFoto(inflatedView)
 
         btnPublicar.setOnClickListener {
-            val nombre      = tilNombre?.editText?.text?.toString()?.trim() ?: ""
-            val descripcion = tilDescripcion?.editText?.text?.toString()?.trim() ?: ""
-            val calle       = tilCalle?.editText?.text?.toString()?.trim() ?: ""
-            val numExt      = tilNumExt?.editText?.text?.toString()?.trim() ?: ""
-            val numInt      = tilNumInt?.editText?.text?.toString()?.trim() ?: ""
-            val colonia     = tilColonia?.editText?.text?.toString()?.trim() ?: ""
+            val nombre      = etNombre.text.toString().trim()
+            val descripcion = etDescripcion.text.toString().trim()
+            val calle       = etCalle.text.toString().trim()
+            val numExt      = etNumExt.text.toString().trim()
+            val numInt      = etNumInt.text.toString().trim()
+            val colonia     = etColonia.text.toString().trim()
             val ciudad      = actvCiudad.text.toString().trim()
-            val cp          = tilCp?.editText?.text?.toString()?.trim() ?: ""
-            val estado      = tilEstado?.editText?.text?.toString()?.trim() ?: ""
+            val cp          = etCp.text.toString().trim()
+            val estado      = etEstado.text.toString().trim()
             val pais        = actvPais.text.toString().trim()
-            val precio      = tilPrecio?.editText?.text?.toString()?.trim() ?: ""
+            val precio      = etPrecio.text.toString().trim()
 
             if (nombre.isEmpty() || calle.isEmpty() || numExt.isEmpty() || ciudad.isEmpty() || precio.isEmpty()) {
-                Toast.makeText(requireContext(), "Completa los campos obligatorios", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Completa los campos obligatorios (*)", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
             if (pais.isNotEmpty() && ciudad.isNotEmpty()) {
                 val ciudadesDelPais = ciudadesPorPais[pais] ?: emptyList()
-                if (!ciudadesDelPais.contains(ciudad)) {
+                if (ciudadesDelPais.isNotEmpty() && !ciudadesDelPais.contains(ciudad)) {
                     Toast.makeText(requireContext(), "Selecciona una ciudad válida para $pais", Toast.LENGTH_SHORT).show()
                     return@setOnClickListener
                 }
@@ -276,7 +272,8 @@ class PropiedadesFragment : Fragment() {
             val cpStr         = if (cp.isNotEmpty()) "C.P. $cp, " else ""
             val estadoStr     = if (estado.isNotEmpty()) "$estado, " else ""
             val paisStr       = if (pais.isNotEmpty()) pais else ""
-            val direccionCompleta = "$calle $numStr, ${coloniaStr}${ciudad}, ${estadoStr}${cpStr}${paisStr}".trim().trimEnd(',')
+            val direccionCompleta = "$calle $numStr, ${coloniaStr}${ciudad}, ${estadoStr}${cpStr}${paisStr}"
+                .trim().trimEnd(',')
 
             val tipoSeleccionado = when (toggleGroup.checkedButtonId) {
                 R.id.btn_renta -> "Renta"
