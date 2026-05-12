@@ -75,12 +75,18 @@ class PropiedadesFragment : Fragment() {
         val tabFilter    = view.findViewById<TabLayout>(R.id.tab_filter)
         val btnAgregar   = view.findViewById<ImageView>(R.id.btn_agregar_propiedad)
 
-        adapter = PropiedadAdapter(getFilteredList()) { position ->
-            val toRemove = getFilteredList()[position]
-            propiedades.remove(toRemove)
-            adapter.updateData(getFilteredList())
-            Toast.makeText(requireContext(), "Propiedad eliminada", Toast.LENGTH_SHORT).show()
-        }
+        adapter = PropiedadAdapter(
+            getFilteredList(),
+            onDelete = { position ->
+                val toRemove = getFilteredList()[position]
+                propiedades.remove(toRemove)
+                adapter.updateData(getFilteredList())
+                Toast.makeText(requireContext(), "Propiedad eliminada", Toast.LENGTH_SHORT).show()
+            },
+            onClick = { propiedad ->
+                showDetalleDialog(propiedad)
+            }
+        )
 
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = adapter
@@ -103,6 +109,60 @@ class PropiedadesFragment : Fragment() {
         else    -> propiedades.toList()
     }
 
+    // ── NUEVO: Dialog de detalle ──────────────────────────────────────────────
+
+    private fun showDetalleDialog(propiedad: PropiedadItem) {
+        val view = LayoutInflater.from(requireContext())
+            .inflate(R.layout.dialog_detalle_propiedad, null)
+
+        val dialog = android.app.AlertDialog.Builder(requireContext())
+            .setView(view)
+            .create()
+
+        // Rellenar datos
+        view.findViewById<TextView>(R.id.tv_detalle_nombre).text = propiedad.nombre
+        view.findViewById<TextView>(R.id.tv_detalle_direccion).text = propiedad.direccion
+        view.findViewById<TextView>(R.id.tv_detalle_precio).text = propiedad.precio
+        view.findViewById<TextView>(R.id.tv_detalle_precio_full).text = propiedad.precio
+
+        val tvTipo = view.findViewById<TextView>(R.id.tv_detalle_tipo)
+        tvTipo.text = if (propiedad.tipo == "Renta") "Renta 🏠" else "Venta 🏢"
+        tvTipo.setBackgroundResource(
+            if (propiedad.tipo == "Renta") R.drawable.chip_renta_bg else R.drawable.chip_venta_bg
+        )
+
+        // Fotos
+        val llFotos     = view.findViewById<LinearLayout>(R.id.ll_fotos)
+        val llSinFotos  = view.findViewById<LinearLayout>(R.id.ll_sin_fotos)
+        val hsvFotos    = view.findViewById<View>(R.id.hsv_fotos)
+
+        if (propiedad.fotos.isEmpty()) {
+            hsvFotos.visibility  = View.GONE
+            llSinFotos.visibility = View.VISIBLE
+        } else {
+            hsvFotos.visibility  = View.VISIBLE
+            llSinFotos.visibility = View.GONE
+            propiedad.fotos.forEach { uri ->
+                val img = ImageView(requireContext()).apply {
+                    layoutParams = LinearLayout.LayoutParams(400, LinearLayout.LayoutParams.MATCH_PARENT).apply {
+                        marginEnd = 12
+                    }
+                    scaleType = ImageView.ScaleType.CENTER_CROP
+                    setImageURI(uri)
+                }
+                llFotos.addView(img)
+            }
+        }
+
+        view.findViewById<ImageView>(R.id.btn_cerrar_detalle).setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
+    }
+
+    // ── Dialog agregar propiedad (sin cambios) ────────────────────────────────
+
     private fun showAddPropertyDialog() {
         fotoUris.fill(null)
 
@@ -113,7 +173,6 @@ class PropiedadesFragment : Fragment() {
             .setView(inflatedView)
             .create()
 
-        // Campos
         val toggleGroup  = inflatedView.findViewById<com.google.android.material.button.MaterialButtonToggleGroup>(R.id.toggle_tipo)
         val btnPublicar  = inflatedView.findViewById<com.google.android.material.button.MaterialButton>(R.id.btn_publicar)
         val btnCerrar    = inflatedView.findViewById<ImageView>(R.id.btn_cerrar_dialog)
@@ -151,7 +210,6 @@ class PropiedadesFragment : Fragment() {
                 return@setOnClickListener
             }
 
-            // Construir dirección completa
             val numStr     = if (numInt.isNotEmpty()) "$numExt Int. $numInt" else numExt
             val coloniaStr = if (colonia.isNotEmpty()) "Col. $colonia, " else ""
             val cpStr      = if (cp.isNotEmpty()) "C.P. $cp, " else ""
@@ -218,9 +276,12 @@ class PropiedadesFragment : Fragment() {
         root.findViewById<ImageView>(ids.btnRemove)?.visibility = View.GONE
     }
 
+    // ── Adapter ───────────────────────────────────────────────────────────────
+
     inner class PropiedadAdapter(
         private var items: List<PropiedadItem>,
-        private val onDelete: (Int) -> Unit
+        private val onDelete: (Int) -> Unit,
+        private val onClick: (PropiedadItem) -> Unit
     ) : RecyclerView.Adapter<PropiedadAdapter.ViewHolder>() {
 
         inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -240,7 +301,12 @@ class PropiedadesFragment : Fragment() {
             holder.tvNombre.text = item.nombre
             holder.tvPrecio.text = "Precio: ${item.precio}"
             holder.tvTipo.text   = if (item.tipo == "Renta") "Renta 🏠" else "Venta 🏢"
-            holder.tvTipo.setBackgroundResource(if (item.tipo == "Renta") R.drawable.chip_renta_bg else R.drawable.chip_venta_bg)
+            holder.tvTipo.setBackgroundResource(
+                if (item.tipo == "Renta") R.drawable.chip_renta_bg else R.drawable.chip_venta_bg
+            )
+            // Click en toda la tarjeta → abre detalle
+            holder.itemView.setOnClickListener { onClick(item) }
+            // Click en eliminar → borra
             holder.btnEliminar.setOnClickListener { onDelete(holder.adapterPosition) }
         }
 
