@@ -8,6 +8,8 @@ import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -30,6 +32,60 @@ data class PropiedadItem(
 )
 
 class PropiedadesFragment : Fragment() {
+
+    // ── Datos de ciudades y países disponibles en Tsukiji ─────────────────────
+
+    /**
+     * Mapa de País → lista de ciudades disponibles en Tsukiji.
+     * Derivado directamente de las zonas en generateSampleBusinessData().
+     */
+    private val ciudadesPorPais: Map<String, List<String>> = linkedMapOf(
+        "México" to listOf(
+            "Monterrey",
+            "San Pedro Garza García",
+            "Guadalupe",
+            "San Nicolás de los Garza",
+            "Apodaca",
+            "General Escobedo",
+            "Santa Catarina",
+            "García",
+            "Juárez",
+            "Cadereyta Jiménez",
+            "Saltillo",
+            "Ciudad de México",
+            "Ecatepec",
+            "Nezahualcóyotl",
+            "Tlalnepantla",
+            "Naucalpan"
+        ),
+        "Estados Unidos" to listOf(
+            "Nueva York",
+            "Los Ángeles",
+            "Burbank",
+            "Long Beach",
+            "Pasadena",
+            "Inglewood",
+            "Compton"
+        ),
+        "Reino Unido" to listOf(
+            "Londres"
+        ),
+        "Francia" to listOf(
+            "París",
+            "Saint-Denis",
+            "Boulogne-Billancourt",
+            "Levallois-Perret"
+        ),
+        "Japón" to listOf(
+            "Tokio",
+            "Yokohama",
+            "Osaka"
+        )
+    )
+
+    private val paises: List<String> get() = ciudadesPorPais.keys.toList()
+
+    // ── Estado del fragment ───────────────────────────────────────────────────
 
     private val propiedades = mutableListOf(
         PropiedadItem("Local Comercial Centro", "Av. Constitución 100, Col. Centro, Monterrey, NL, México", "$15,000 MXN/mes", "Renta"),
@@ -64,6 +120,8 @@ class PropiedadesFragment : Fragment() {
                 mostrarFotoEnSlot(slotSeleccionado, uri)
             }
         }
+
+    // ── Lifecycle ─────────────────────────────────────────────────────────────
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
         inflater.inflate(R.layout.fragment_propiedades, container, false)
@@ -109,7 +167,7 @@ class PropiedadesFragment : Fragment() {
         else    -> propiedades.toList()
     }
 
-    // ── NUEVO: Dialog de detalle ──────────────────────────────────────────────
+    // ── Dialog de detalle ─────────────────────────────────────────────────────
 
     private fun showDetalleDialog(propiedad: PropiedadItem) {
         val view = LayoutInflater.from(requireContext())
@@ -119,7 +177,6 @@ class PropiedadesFragment : Fragment() {
             .setView(view)
             .create()
 
-        // Rellenar datos
         view.findViewById<TextView>(R.id.tv_detalle_nombre).text = propiedad.nombre
         view.findViewById<TextView>(R.id.tv_detalle_direccion).text = propiedad.direccion
         view.findViewById<TextView>(R.id.tv_detalle_precio).text = propiedad.precio
@@ -131,16 +188,15 @@ class PropiedadesFragment : Fragment() {
             if (propiedad.tipo == "Renta") R.drawable.chip_renta_bg else R.drawable.chip_venta_bg
         )
 
-        // Fotos
-        val llFotos     = view.findViewById<LinearLayout>(R.id.ll_fotos)
-        val llSinFotos  = view.findViewById<LinearLayout>(R.id.ll_sin_fotos)
-        val hsvFotos    = view.findViewById<View>(R.id.hsv_fotos)
+        val llFotos    = view.findViewById<LinearLayout>(R.id.ll_fotos)
+        val llSinFotos = view.findViewById<LinearLayout>(R.id.ll_sin_fotos)
+        val hsvFotos   = view.findViewById<View>(R.id.hsv_fotos)
 
         if (propiedad.fotos.isEmpty()) {
-            hsvFotos.visibility  = View.GONE
+            hsvFotos.visibility   = View.GONE
             llSinFotos.visibility = View.VISIBLE
         } else {
-            hsvFotos.visibility  = View.VISIBLE
+            hsvFotos.visibility   = View.VISIBLE
             llSinFotos.visibility = View.GONE
             propiedad.fotos.forEach { uri ->
                 val img = ImageView(requireContext()).apply {
@@ -161,7 +217,7 @@ class PropiedadesFragment : Fragment() {
         dialog.show()
     }
 
-    // ── Dialog agregar propiedad (sin cambios) ────────────────────────────────
+    // ── Dialog agregar propiedad ──────────────────────────────────────────────
 
     private fun showAddPropertyDialog() {
         fotoUris.fill(null)
@@ -173,20 +229,39 @@ class PropiedadesFragment : Fragment() {
             .setView(inflatedView)
             .create()
 
-        val toggleGroup  = inflatedView.findViewById<com.google.android.material.button.MaterialButtonToggleGroup>(R.id.toggle_tipo)
-        val btnPublicar  = inflatedView.findViewById<com.google.android.material.button.MaterialButton>(R.id.btn_publicar)
-        val btnCerrar    = inflatedView.findViewById<ImageView>(R.id.btn_cerrar_dialog)
+        val toggleGroup = inflatedView.findViewById<com.google.android.material.button.MaterialButtonToggleGroup>(R.id.toggle_tipo)
+        val btnPublicar = inflatedView.findViewById<com.google.android.material.button.MaterialButton>(R.id.btn_publicar)
+        val btnCerrar   = inflatedView.findViewById<ImageView>(R.id.btn_cerrar_dialog)
 
-        val tilNombre    = inflatedView.findViewById<TextInputLayout>(R.id.til_nombre)
-        val tilCalle     = inflatedView.findViewById<TextInputLayout>(R.id.til_calle)
-        val tilNumExt    = inflatedView.findViewById<TextInputLayout>(R.id.til_numero_ext)
-        val tilNumInt    = inflatedView.findViewById<TextInputLayout>(R.id.til_numero_int)
-        val tilColonia   = inflatedView.findViewById<TextInputLayout>(R.id.til_colonia)
-        val tilCiudad    = inflatedView.findViewById<TextInputLayout>(R.id.til_ciudad)
-        val tilCp        = inflatedView.findViewById<TextInputLayout>(R.id.til_cp)
-        val tilEstado    = inflatedView.findViewById<TextInputLayout>(R.id.til_estado)
-        val tilPais      = inflatedView.findViewById<TextInputLayout>(R.id.til_pais)
-        val tilPrecio    = inflatedView.findViewById<TextInputLayout>(R.id.til_precio)
+        val tilNombre  = inflatedView.findViewById<TextInputLayout>(R.id.til_nombre)
+        val tilCalle   = inflatedView.findViewById<TextInputLayout>(R.id.til_calle)
+        val tilNumExt  = inflatedView.findViewById<TextInputLayout>(R.id.til_numero_ext)
+        val tilNumInt  = inflatedView.findViewById<TextInputLayout>(R.id.til_numero_int)
+        val tilColonia = inflatedView.findViewById<TextInputLayout>(R.id.til_colonia)
+        val tilCp      = inflatedView.findViewById<TextInputLayout>(R.id.til_cp)
+        val tilEstado  = inflatedView.findViewById<TextInputLayout>(R.id.til_estado)
+        val tilPrecio  = inflatedView.findViewById<TextInputLayout>(R.id.til_precio)
+
+        // Dropdowns
+        val actvCiudad = inflatedView.findViewById<AutoCompleteTextView>(R.id.et_ciudad)
+        val actvPais   = inflatedView.findViewById<AutoCompleteTextView>(R.id.et_pais)
+
+        // ── Configurar dropdown de País ──
+        val paisAdapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_dropdown_item_1line,
+            paises
+        )
+        actvPais.setAdapter(paisAdapter)
+
+        // Cuando cambia el país, actualizar las ciudades disponibles
+        actvPais.setOnItemClickListener { _, _, position, _ ->
+            val paisSeleccionado = paises[position]
+            actualizarDropdownCiudad(actvCiudad, paisSeleccionado)
+        }
+
+        // ── Configurar dropdown de Ciudad (vacío hasta seleccionar país) ──
+        actualizarDropdownCiudad(actvCiudad, null)
 
         toggleGroup.check(R.id.btn_venta)
         btnCerrar.setOnClickListener { dialog.dismiss() }
@@ -194,26 +269,38 @@ class PropiedadesFragment : Fragment() {
         configurarSlotsFoto(inflatedView)
 
         btnPublicar.setOnClickListener {
-            val nombre   = tilNombre?.editText?.text?.toString()?.trim() ?: ""
-            val calle    = tilCalle?.editText?.text?.toString()?.trim() ?: ""
-            val numExt   = tilNumExt?.editText?.text?.toString()?.trim() ?: ""
-            val numInt   = tilNumInt?.editText?.text?.toString()?.trim() ?: ""
-            val colonia  = tilColonia?.editText?.text?.toString()?.trim() ?: ""
-            val ciudad   = tilCiudad?.editText?.text?.toString()?.trim() ?: ""
-            val cp       = tilCp?.editText?.text?.toString()?.trim() ?: ""
-            val estado   = tilEstado?.editText?.text?.toString()?.trim() ?: ""
-            val pais     = tilPais?.editText?.text?.toString()?.trim() ?: ""
-            val precio   = tilPrecio?.editText?.text?.toString()?.trim() ?: ""
+            val nombre  = tilNombre?.editText?.text?.toString()?.trim() ?: ""
+            val calle   = tilCalle?.editText?.text?.toString()?.trim() ?: ""
+            val numExt  = tilNumExt?.editText?.text?.toString()?.trim() ?: ""
+            val numInt  = tilNumInt?.editText?.text?.toString()?.trim() ?: ""
+            val colonia = tilColonia?.editText?.text?.toString()?.trim() ?: ""
+            val ciudad  = actvCiudad.text.toString().trim()
+            val cp      = tilCp?.editText?.text?.toString()?.trim() ?: ""
+            val estado  = tilEstado?.editText?.text?.toString()?.trim() ?: ""
+            val pais    = actvPais.text.toString().trim()
+            val precio  = tilPrecio?.editText?.text?.toString()?.trim() ?: ""
 
+            // Validar campos obligatorios
             if (nombre.isEmpty() || calle.isEmpty() || numExt.isEmpty() || ciudad.isEmpty() || precio.isEmpty()) {
                 Toast.makeText(requireContext(), "Completa los campos obligatorios", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            val numStr     = if (numInt.isNotEmpty()) "$numExt Int. $numInt" else numExt
-            val coloniaStr = if (colonia.isNotEmpty()) "Col. $colonia, " else ""
-            val cpStr      = if (cp.isNotEmpty()) "C.P. $cp, " else ""
-            val direccionCompleta = "$calle $numStr, ${coloniaStr}${ciudad}, $estado $cpStr$pais".trim().trimEnd(',')
+            // Validar que la ciudad seleccionada pertenece al país elegido
+            if (pais.isNotEmpty() && ciudad.isNotEmpty()) {
+                val ciudadesDelPais = ciudadesPorPais[pais] ?: emptyList()
+                if (!ciudadesDelPais.contains(ciudad)) {
+                    Toast.makeText(requireContext(), "Selecciona una ciudad válida para $pais", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+            }
+
+            val numStr         = if (numInt.isNotEmpty()) "$numExt Int. $numInt" else numExt
+            val coloniaStr     = if (colonia.isNotEmpty()) "Col. $colonia, " else ""
+            val cpStr          = if (cp.isNotEmpty()) "C.P. $cp, " else ""
+            val estadoStr      = if (estado.isNotEmpty()) "$estado, " else ""
+            val paisStr        = if (pais.isNotEmpty()) pais else ""
+            val direccionCompleta = "$calle $numStr, ${coloniaStr}${ciudad}, ${estadoStr}${cpStr}${paisStr}".trim().trimEnd(',')
 
             val tipoSeleccionado = when (toggleGroup.checkedButtonId) {
                 R.id.btn_renta -> "Renta"
@@ -241,6 +328,30 @@ class PropiedadesFragment : Fragment() {
         dialog.setOnDismissListener { dialogView = null }
         dialog.show()
     }
+
+    /**
+     * Actualiza el adapter del dropdown de ciudades según el país seleccionado.
+     * Si [pais] es null, muestra todas las ciudades disponibles en Tsukiji.
+     */
+    private fun actualizarDropdownCiudad(actvCiudad: AutoCompleteTextView, pais: String?) {
+        val ciudades = if (pais != null) {
+            ciudadesPorPais[pais] ?: emptyList()
+        } else {
+            ciudadesPorPais.values.flatten().distinct().sorted()
+        }
+
+        val ciudadAdapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_dropdown_item_1line,
+            ciudades
+        )
+        actvCiudad.setAdapter(ciudadAdapter)
+
+        // Limpiar selección previa si el país cambió
+        if (pais != null) actvCiudad.setText("", false)
+    }
+
+    // ── Gestión de fotos ──────────────────────────────────────────────────────
 
     private fun configurarSlotsFoto(root: View) {
         slots.forEachIndexed { index, ids ->
@@ -304,9 +415,7 @@ class PropiedadesFragment : Fragment() {
             holder.tvTipo.setBackgroundResource(
                 if (item.tipo == "Renta") R.drawable.chip_renta_bg else R.drawable.chip_venta_bg
             )
-            // Click en toda la tarjeta → abre detalle
             holder.itemView.setOnClickListener { onClick(item) }
-            // Click en eliminar → borra
             holder.btnEliminar.setOnClickListener { onDelete(holder.adapterPosition) }
         }
 

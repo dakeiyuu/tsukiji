@@ -275,7 +275,7 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Ciudad y CP -->
+        <!-- Ciudad (dropdown) y CP -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -284,6 +284,7 @@
             android:layout_marginEnd="20dp"
             android:layout_marginBottom="10dp">
 
+            <!-- Ciudad - ExposedDropdownMenu -->
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/til_ciudad"
                 android:layout_width="0dp"
@@ -296,9 +297,11 @@
                 app:boxCornerRadiusBottomStart="12dp"
                 app:boxCornerRadiusBottomEnd="12dp"
                 app:hintEnabled="false"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                app:endIconMode="dropdown_menu"
+                app:endIconTint="#F5A623"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
 
-                <com.google.android.material.textfield.TextInputEditText
+                <AutoCompleteTextView
                     android:id="@+id/et_ciudad"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -306,8 +309,11 @@
                     android:textColor="#212121"
                     android:textColorHint="#AAAAAA"
                     android:textSize="13sp"
-                    android:inputType="textCapWords"
-                    android:padding="14dp" />
+                    android:padding="14dp"
+                    android:inputType="none"
+                    android:focusable="false"
+                    android:cursorVisible="false"
+                    android:saveEnabled="false" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -369,7 +375,7 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- País -->
+        <!-- País (dropdown) -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/til_pais"
             android:layout_width="match_parent"
@@ -383,9 +389,11 @@
             app:boxCornerRadiusBottomStart="12dp"
             app:boxCornerRadiusBottomEnd="12dp"
             app:hintEnabled="false"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+            app:endIconMode="dropdown_menu"
+            app:endIconTint="#F5A623"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
 
-            <com.google.android.material.textfield.TextInputEditText
+            <AutoCompleteTextView
                 android:id="@+id/et_pais"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -393,8 +401,11 @@
                 android:textColor="#212121"
                 android:textColorHint="#AAAAAA"
                 android:textSize="14sp"
-                android:inputType="textCapWords"
-                android:padding="14dp" />
+                android:padding="14dp"
+                android:inputType="none"
+                android:focusable="false"
+                android:cursorVisible="false"
+                android:saveEnabled="false" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
