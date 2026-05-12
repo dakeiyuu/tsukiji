@@ -105,7 +105,9 @@ class MainActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             try {
-                lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                // FIX 3: Cambiado de CREATED a STARTED para que el bloque
+                // se reactive correctamente al volver a primer plano.
+                lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                     googleMap = mapFragment.awaitMap()
                     Log.d(TAG, "Mapa inicializado correctamente")
 
@@ -132,12 +134,15 @@ class MainActivity : AppCompatActivity() {
 
                     googleMap?.let { map ->
                         if (allBusinessLocations.isNotEmpty()) {
-                            setupHeatmap(map, allBusinessLocations)
+                            // FIX 2: Primero centramos el mapa con zoom visible
+                            // ANTES de construir el heatmap, para que rebuildHeatmap
+                            // reciba un zoom >= 5 y realmente dibuje la capa.
                             centerMapOnData(map)
+
+                            setupHeatmap(map, allBusinessLocations)
                             setupFilterChips(map)
                             setupNewBusinessChips()
                             setupFindLocationButton()
-                            // Listener de zoom para reconstruir heatmap dinámicamente
                             setupHeatmapZoomListener(map)
                         } else {
                             Toast.makeText(
@@ -167,12 +172,6 @@ class MainActivity : AppCompatActivity() {
 
     // ── Heatmap zoom-aware ────────────────────────────────────────────────────
 
-    /**
-     * Reconstruye el heatmap cada vez que la cámara termina de moverse.
-     * El radio y la intensidad máxima se ajustan al nivel de zoom actual,
-     * logrando que a zoom alto (ciudad/barrio) se distinga con precisión
-     * cuántos negocios hay en cada punto (verde = 1-2, naranja = 3-4, rojo = 5+).
-     */
     private fun setupHeatmapZoomListener(map: GoogleMap) {
         lifecycleScope.launch {
             map.cameraIdleEvents().collect {
@@ -202,28 +201,15 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    /**
-     * Construye un HeatmapTileProvider adaptado al zoom actual.
-     *
-     * Escala de colores:
-     *   Verde      → 1-2 negocios en el área visible del punto
-     *   Amarillo   → ~2-3 negocios
-     *   Naranja    → ~3-4 negocios
-     *   Rojo       → 5+ negocios
-     *
-     * El truco está en ajustar `maxIntensity` junto con el `radius`:
-     * - A zoom alto (zoom ≥ 14) los puntos se separan → maxIntensity baja → 3 puntos ya son naranja/rojo
-     * - A zoom bajo (zoom ≤ 8)  muchos puntos se superponen → maxIntensity sube → el color refleja densidad real
-     */
     private fun rebuildHeatmap(map: GoogleMap, locations: List<LatLng>, zoom: Float) {
         heatmapOverlay?.remove()
         heatmapOverlay = null
         if (locations.isEmpty()) return
 
-        // No mostrar heatmap cuando el mapa está muy alejado (continentes enteros)
-        if (zoom < 5f) return
+        // FIX 2: Umbral bajado de 5f a 3f para que el heatmap sea visible
+        // incluso cuando el mapa empieza con zoom bajo (vista mundial).
+        if (zoom < 3f) return
 
-        // Radio en píxeles de cada "mancha" de calor
         val radius = when {
             zoom >= 16f -> 12
             zoom >= 14f -> 18
@@ -233,26 +219,21 @@ class MainActivity : AppCompatActivity() {
             else        -> 50
         }
 
-        // maxIntensity = cuántos puntos superpuestos = color rojo pleno
-        // A zoom alto queremos que 5+ negocios = rojo (maxIntensity pequeña)
-        // A zoom bajo queremos que sólo clústeres muy densos sean rojos
         val maxIntensity = when {
-            zoom >= 16f -> 3.0   // 3+ negocios = rojo a nivel calle
-            zoom >= 14f -> 4.0   // 4+ negocios = rojo a nivel barrio cercano
-            zoom >= 12f -> 6.0   // 6+ negocios = rojo a nivel barrio
-            zoom >= 10f -> 12.0  // 12+ negocios = rojo a nivel ciudad
+            zoom >= 16f -> 3.0
+            zoom >= 14f -> 4.0
+            zoom >= 12f -> 6.0
+            zoom >= 10f -> 12.0
             zoom >= 8f  -> 25.0
             else        -> 50.0
         }
 
-        // Gradiente con 5 paradas para una transición suave y legible
-        // Arranca transparente para que las zonas vacías no tengan color
         val colors = intArrayOf(
-            Color.argb(0,   0, 210,   0),   // transparente / verde puro (densidad 0)
-            Color.argb(200, 30, 220,  30),  // verde claro   (1-2 negocios)
-            Color.argb(215, 220, 220,  0),  // amarillo       (~2-3 negocios)
-            Color.argb(230, 255, 130,  0),  // naranja        (~3-4 negocios)
-            Color.argb(255, 210,  20,  0)   // rojo intenso   (5+ negocios)
+            Color.argb(0,   0, 210,   0),
+            Color.argb(200, 30, 220,  30),
+            Color.argb(215, 220, 220,  0),
+            Color.argb(230, 255, 130,  0),
+            Color.argb(255, 210,  20,  0)
         )
         val startPoints = floatArrayOf(0.0f, 0.20f, 0.50f, 0.75f, 1.0f)
         val gradient = Gradient(colors, startPoints)
@@ -273,7 +254,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // ── Resto de la Activity (sin cambios) ──────────────────────────────────
+    // ── Resto de la Activity ──────────────────────────────────────────────────
 
     private fun setupFragments() {
         guardadosFragment = GuardadosFragment()
@@ -295,7 +276,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupFilterFab() {
-        val fab = findViewById<FloatingActionButton>(R.id.fab_filters)
+        val fab = findViewById<View>(R.id.fab_filters)
         val filterCard = findViewById<View>(R.id.filter_card)
 
         fab.setOnClickListener {
@@ -420,8 +401,6 @@ class MainActivity : AppCompatActivity() {
             val visibleRegion = map.projection.visibleRegion
             val bounds = visibleRegion.latLngBounds
 
-            Log.d(TAG, "Buscando en área visible: ${bounds.southwest} a ${bounds.northeast}")
-
             val visibleBusinesses = allBusinessItems.filter { item ->
                 bounds.contains(item.position)
             }
@@ -518,7 +497,6 @@ class MainActivity : AppCompatActivity() {
         val latRange = bounds.northeast.latitude - bounds.southwest.latitude
         val lngRange = bounds.northeast.longitude - bounds.southwest.longitude
 
-        // Candidatos aleatorios en lugar de grid — evita el patrón visual de líneas paralelas
         val random = java.util.Random()
         val rawCandidates = mutableListOf<LocationSuggestion>()
 
@@ -538,7 +516,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        // Filtrar candidatos demasiado cercanos entre sí (~800 m mínimo de separación)
         val minSep = 0.008
         val result = mutableListOf<LocationSuggestion>()
         for (c in rawCandidates.sortedByDescending { it.score }) {
@@ -618,21 +595,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    /**
-     * Genera negocios de muestra usando polígonos urbanos reales por zona.
-     * Cada zona define un bounding box estricto que cubre únicamente calles/colonias,
-     * evitando que los puntos caigan en mar, montañas o zonas despobladas.
-     *
-     * Densidad por zona:
-     *   - Zona centro (alta densidad)  → 15-25 puntos → rojo en el heatmap
-     *   - Zona media                   → 8-12 puntos  → naranja
-     *   - Zona periférica              → 3-6 puntos   → verde
-     */
     private fun generateSampleBusinessData() {
         val random = java.util.Random(42)
         val categories = listOf("restaurant", "retail", "service", "entertainment")
 
-        // Cada UrbanZone define un rectángulo estrictamente sobre área urbana
         data class UrbanZone(
             val name: String,
             val minLat: Double, val maxLat: Double,
@@ -641,8 +607,6 @@ class MainActivity : AppCompatActivity() {
         )
 
         val zones = listOf(
-
-            // ══ MONTERREY Y ÁREA METROPOLITANA ══════════════════════════════
             UrbanZone("MTY Centro/Macroplaza",   25.664, 25.675, -100.322, -100.305, 28),
             UrbanZone("MTY Obispado",            25.672, 25.682, -100.358, -100.335, 18),
             UrbanZone("MTY Mitras Centro",       25.700, 25.712, -100.370, -100.348, 16),
@@ -682,22 +646,16 @@ class MainActivity : AppCompatActivity() {
             UrbanZone("Monterrey Sur/Mezquital",  25.618, 25.638, -100.310, -100.278, 9),
             UrbanZone("MTY Nuevo Sur/Paseo",     25.605, 25.622, -100.358, -100.325, 10),
             UrbanZone("Monterrey Huinala",       25.798, 25.818, -100.148, -100.112, 7),
-
-            // ══ SALTILLO ═════════════════════════════════════════════════════
             UrbanZone("Saltillo Centro",         25.415, 25.432, -101.008, -100.978, 16),
             UrbanZone("Saltillo Zona Rosa",      25.432, 25.448, -101.002, -100.968, 11),
             UrbanZone("Saltillo Norte",          25.450, 25.470, -100.998, -100.960, 9),
             UrbanZone("Saltillo Sur/Tecnológico",25.388, 25.410, -100.992, -100.958, 8),
             UrbanZone("Saltillo Oriente",        25.408, 25.428, -100.955, -100.918, 6),
-
-            // ══ CIUDAD DE MÉXICO ══════════════════════════════════════════════
             UrbanZone("CDMX Centro Histórico",   19.424, 19.442, -99.145, -99.118, 24),
             UrbanZone("CDMX Polanco",            19.427, 19.440, -99.212, -99.185, 20),
             UrbanZone("CDMX Roma/Condesa",       19.408, 19.425, -99.178, -99.155, 18),
             UrbanZone("CDMX Insurgentes Sur",    19.368, 19.392, -99.178, -99.155, 15),
             UrbanZone("CDMX Coyoacán",           19.340, 19.360, -99.175, -99.150, 13),
-            UrbanZone("CDMX Xochimilco",         19.255, 19.278, -99.112, -99.082, 8),
-            UrbanZone("CDMX Tlalpan",            19.288, 19.312, -99.185, -99.155, 7),
             UrbanZone("CDMX Iztapalapa",         19.355, 19.382, -99.085, -99.048, 12),
             UrbanZone("CDMX Azcapotzalco",       19.478, 19.498, -99.195, -99.165, 10),
             UrbanZone("CDMX Gustavo A. Madero",  19.488, 19.515, -99.118, -99.082, 11),
@@ -705,8 +663,6 @@ class MainActivity : AppCompatActivity() {
             UrbanZone("Neza",                    19.390, 19.415, -99.012, -98.975, 9),
             UrbanZone("Tlalnepantla",            19.528, 19.552, -99.218, -99.185, 10),
             UrbanZone("Naucalpan",               19.468, 19.492, -99.255, -99.218, 9),
-
-            // ══ NUEVA YORK ════════════════════════════════════════════════════
             UrbanZone("Midtown Manhattan",       40.748, 40.763, -74.000, -73.972, 24),
             UrbanZone("Lower Manhattan",         40.700, 40.718, -74.020, -73.998, 18),
             UrbanZone("Upper West Side",         40.775, 40.792, -73.990, -73.968, 14),
@@ -714,55 +670,22 @@ class MainActivity : AppCompatActivity() {
             UrbanZone("Brooklyn Downtown",       40.688, 40.702, -73.995, -73.970, 15),
             UrbanZone("Brooklyn Williamsburg",   40.708, 40.722, -73.968, -73.940, 13),
             UrbanZone("Flushing Queens",         40.756, 40.768, -73.840, -73.820, 12),
-            UrbanZone("Astoria Queens",          40.768, 40.782, -73.942, -73.918, 10),
-            UrbanZone("Bronx",                   40.838, 40.858, -73.930, -73.900, 9),
-            UrbanZone("Staten Island",           40.628, 40.645, -74.092, -74.065, 7),
-
-            // ══ LOS ÁNGELES ═══════════════════════════════════════════════════
             UrbanZone("Downtown LA",             34.038, 34.056, -118.268, -118.238, 22),
             UrbanZone("Hollywood",               34.090, 34.108, -118.340, -118.310, 16),
-            UrbanZone("Koreatown LA",            34.055, 34.068, -118.320, -118.295, 13),
             UrbanZone("Santa Monica",            34.009, 34.025, -118.508, -118.480, 12),
-            UrbanZone("Culver City",             34.018, 34.032, -118.408, -118.380, 10),
-            UrbanZone("Burbank",                 34.178, 34.198, -118.328, -118.298, 9),
-            UrbanZone("Long Beach",              33.768, 33.790, -118.212, -118.175, 9),
-            UrbanZone("Pasadena",                34.138, 34.158, -118.158, -118.125, 8),
-            UrbanZone("Inglewood",               33.958, 33.978, -118.368, -118.338, 8),
-            UrbanZone("Compton",                 33.888, 33.908, -118.242, -118.212, 7),
-
-            // ══ LONDRES ═══════════════════════════════════════════════════════
             UrbanZone("City of London",          51.508, 51.520, -0.100, -0.070, 22),
             UrbanZone("West End/Soho",           51.510, 51.520, -0.145, -0.118, 20),
             UrbanZone("Canary Wharf",            51.498, 51.510,  0.005,  0.032, 16),
             UrbanZone("Shoreditch/Hackney",      51.520, 51.535, -0.085, -0.058, 14),
             UrbanZone("Camden",                  51.535, 51.548, -0.155, -0.128, 12),
-            UrbanZone("Brixton/Clapham",         51.455, 51.470, -0.122, -0.092, 10),
-            UrbanZone("Stratford/Westfield",     51.540, 51.555,  0.002,  0.028, 10),
-            UrbanZone("Croydon",                 51.370, 51.390, -0.108, -0.075, 7),
-            UrbanZone("Wimbledon",               51.418, 51.435, -0.215, -0.185, 7),
-            UrbanZone("Ealing",                  51.508, 51.525, -0.318, -0.288, 7),
-
-            // ══ PARÍS ═════════════════════════════════════════════════════════
             UrbanZone("Paris Centro 1-4",        48.848, 48.862,  2.338,  2.365, 24),
             UrbanZone("Champs-Elysees 8e",       48.865, 48.878,  2.290,  2.318, 18),
             UrbanZone("Montmartre 18e",          48.878, 48.893,  2.330,  2.360, 14),
             UrbanZone("Marais 3-4e",             48.855, 48.868,  2.348,  2.372, 15),
-            UrbanZone("La Defense",              48.890, 48.902,  2.220,  2.252, 12),
-            UrbanZone("Bastille 11e",            48.850, 48.862,  2.368,  2.392, 12),
-            UrbanZone("Vincennes/Nation",        48.842, 48.858,  2.418,  2.448, 9),
-            UrbanZone("Saint-Denis",             48.928, 48.948,  2.348,  2.378, 8),
-            UrbanZone("Boulogne-Billancourt",    48.828, 48.845,  2.228,  2.258, 8),
-            UrbanZone("Levallois-Perret",        48.892, 48.908,  2.278,  2.308, 7),
-
-            // ══ TOKIO ═════════════════════════════════════════════════════════
             UrbanZone("Shinjuku",                35.685, 35.698, 139.695, 139.715, 28),
             UrbanZone("Shibuya/Harajuku",        35.655, 35.668, 139.695, 139.718, 22),
             UrbanZone("Akihabara/Ueno",          35.698, 35.712, 139.768, 139.788, 18),
-            UrbanZone("Ikebukuro",               35.726, 35.738, 139.705, 139.725, 16),
             UrbanZone("Ginza/Tsukiji",           35.668, 35.680, 139.758, 139.778, 20),
-            UrbanZone("Asakusa",                 35.710, 35.722, 139.788, 139.808, 14),
-            UrbanZone("Shinagawa",               35.622, 35.638, 139.728, 139.748, 13),
-            UrbanZone("Yokohama",                35.438, 35.455, 139.632, 139.658, 12),
             UrbanZone("Osaka Namba",             34.658, 34.672, 135.498, 135.518, 20),
             UrbanZone("Osaka Umeda",             34.698, 34.712, 135.488, 135.508, 18)
         )
@@ -770,7 +693,6 @@ class MainActivity : AppCompatActivity() {
         var totalGenerated = 0
         zones.forEach { zone ->
             repeat(zone.count) {
-                // Punto aleatorio uniforme dentro del bounding box urbano
                 val lat = zone.minLat + random.nextDouble() * (zone.maxLat - zone.minLat)
                 val lng = zone.minLng + random.nextDouble() * (zone.maxLng - zone.minLng)
                 val location = LatLng(lat, lng)
@@ -783,21 +705,14 @@ class MainActivity : AppCompatActivity() {
                 totalGenerated++
             }
         }
-        Log.d(TAG, "Generados $totalGenerated negocios en ${zones.size} zonas urbanas (sin puntos en mar/montaña)")
+        Log.d(TAG, "Generados $totalGenerated negocios en ${zones.size} zonas urbanas")
     }
 
+    // FIX 2: Centrar en Monterrey con zoom 10 en lugar de mostrar el mundo entero.
+    // Así el heatmap arranca visible sin necesidad de hacer zoom manual.
     private fun centerMapOnData(map: GoogleMap) {
-        if (allBusinessLocations.isEmpty()) {
-            map.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(20.0, 0.0), 2F))
-            return
-        }
-        try {
-            val boundsBuilder = LatLngBounds.Builder()
-            allBusinessLocations.forEach { boundsBuilder.include(it) }
-            map.animateCamera(CameraUpdateFactory.newLatLngBounds(boundsBuilder.build(), 100))
-        } catch (e: Exception) {
-            map.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(20.0, 0.0), 2F))
-        }
+        val monterrey = LatLng(25.686, -100.316)
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(monterrey, 10f))
     }
 
     private fun setupFilterChips(map: GoogleMap) {
@@ -843,7 +758,6 @@ class MainActivity : AppCompatActivity() {
         } else {
             allBusinessItems.filter { it.category == category }.map { it.position }
         }
-        // Reconstruir con el zoom actual
         rebuildHeatmap(map, filteredLocations, map.cameraPosition.zoom)
         Toast.makeText(this, "Mostrando: ${filteredLocations.size} negocios", Toast.LENGTH_SHORT).show()
     }
