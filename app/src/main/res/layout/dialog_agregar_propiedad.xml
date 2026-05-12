@@ -4,7 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#FFFFFF">
+    android:background="#FFFFFF"
+    android:clipToPadding="false">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -14,76 +15,107 @@
 
         <!-- Handle del BottomSheet -->
         <View
-            android:layout_width="40dp"
+            android:layout_width="36dp"
             android:layout_height="4dp"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="4dp"
             android:background="#DDDDDD" />
 
-        <!-- Header naranja -->
+        <!-- ── HEADER ── -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="52dp"
-            android:background="#F5A623"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:paddingStart="16dp"
+            android:paddingStart="20dp"
             android:paddingEnd="16dp"
-            android:layout_marginBottom="20dp">
+            android:paddingTop="12dp"
+            android:paddingBottom="16dp">
 
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="AGREGAR PROPIEDAD"
-                android:textColor="#FFFFFF"
-                android:textSize="17sp"
+                android:layout_weight="1"
+                android:text="Agregar propiedad"
+                android:textColor="#F5732A"
+                android:textSize="22sp"
                 android:textStyle="bold"
-                android:letterSpacing="0.08"
-                android:fontFamily="sans-serif-condensed" />
+                android:fontFamily="sans-serif-medium" />
+
+            <!-- Botón cerrar -->
+            <ImageView
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:src="@android:drawable/ic_menu_close_clear_cancel"
+                android:tint="#BBBBBB"
+                android:background="@drawable/bg_close_circle"
+                android:padding="8dp"
+                android:contentDescription="Cerrar" />
 
         </LinearLayout>
 
-        <!-- Label tipo operación -->
+        <!-- Divisor -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="#F0F0F0"
+            android:layout_marginBottom="20dp" />
+
+        <!-- ── Tipo de operación ── -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Tipo de operación"
-            android:textColor="#757575"
-            android:textSize="12sp"
-            android:paddingStart="16dp"
-            android:layout_marginBottom="6dp" />
+            android:textColor="#1A1A1A"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:paddingStart="20dp"
+            android:layout_marginBottom="10dp" />
 
-        <!-- Toggle Venta / Renta -->
         <com.google.android.material.button.MaterialButtonToggleGroup
             android:id="@+id/toggle_tipo"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginBottom="20dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="24dp"
             app:singleSelection="true"
             app:selectionRequired="true">
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_venta"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="wrap_content"
-                android:layout_height="36dp"
+                android:layout_width="0dp"
+                android:layout_height="52dp"
+                android:layout_weight="1"
                 android:text="Venta"
-                android:textColor="#F5A623"
-                android:textSize="13sp"
-                app:strokeColor="#F5A623"
-                app:strokeWidth="1dp" />
+                android:textColor="#F5732A"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                app:icon="@android:drawable/ic_menu_sort_by_size"
+                app:iconGravity="start"
+                app:iconTint="#F5732A"
+                app:strokeColor="#F5732A"
+                app:strokeWidth="1.5dp"
+                app:cornerRadius="12dp" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_renta"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="wrap_content"
-                android:layout_height="36dp"
+                android:layout_width="0dp"
+                android:layout_height="52dp"
+                android:layout_weight="1"
                 android:text="Renta"
-                android:textColor="#F5A623"
-                android:textSize="13sp"
-                app:strokeColor="#F5A623"
-                app:strokeWidth="1dp" />
+                android:textColor="#AAAAAA"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                app:icon="@android:drawable/ic_menu_myplaces"
+                app:iconGravity="start"
+                app:iconTint="#AAAAAA"
+                app:strokeColor="#E0E0E0"
+                app:strokeWidth="1.5dp"
+                app:cornerRadius="12dp" />
 
         </com.google.android.material.button.MaterialButtonToggleGroup>
 
@@ -92,66 +124,287 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Nombre o título *"
-            android:textColor="#212121"
-            android:textSize="13sp"
+            android:textColor="#1A1A1A"
+            android:textSize="14sp"
             android:textStyle="bold"
-            android:paddingStart="16dp"
-            android:layout_marginBottom="4dp" />
+            android:paddingStart="20dp"
+            android:layout_marginBottom="8dp" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="16dp"
-            app:boxStrokeColor="#F5A623"
-            app:boxStrokeWidth="1dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="20dp"
+            app:boxStrokeColor="#F5732A"
+            app:boxStrokeWidth="1.5dp"
+            app:boxStrokeWidthFocused="1.5dp"
             app:hintEnabled="false"
+            app:startIconDrawable="@android:drawable/ic_menu_myplaces"
+            app:startIconTint="#F5732A"
+            app:boxCornerRadiusTopStart="12dp"
+            app:boxCornerRadiusTopEnd="12dp"
+            app:boxCornerRadiusBottomStart="12dp"
+            app:boxCornerRadiusBottomEnd="12dp"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_nombre"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Ej: Local Comercial Centro"
-                android:textColor="#212121"
-                android:textColorHint="#AAAAAA"
+                android:layout_height="56dp"
+                android:hint="Ej. Local Comercial Centro"
+                android:textColor="#1A1A1A"
+                android:textColorHint="#CCCCCC"
                 android:textSize="14sp"
                 android:inputType="textCapWords" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- ── Dirección ── -->
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Dirección *"
-            android:textColor="#212121"
-            android:textSize="13sp"
-            android:textStyle="bold"
-            android:paddingStart="16dp"
-            android:layout_marginBottom="4dp" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:layout_marginBottom="8dp">
 
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:src="@android:drawable/ic_menu_mylocation"
+                android:tint="#F5732A"
+                android:layout_marginEnd="6dp"
+                android:contentDescription="Dirección" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Dirección"
+                android:textColor="#1A1A1A"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <!-- Fila: Calle + Número exterior -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="10dp">
+
+            <!-- Calle -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:layout_marginEnd="8dp"
+                app:boxStrokeColor="#F5732A"
+                app:boxStrokeWidth="1.5dp"
+                app:boxStrokeWidthFocused="1.5dp"
+                app:hintEnabled="false"
+                app:boxCornerRadiusTopStart="12dp"
+                app:boxCornerRadiusTopEnd="12dp"
+                app:boxCornerRadiusBottomStart="12dp"
+                app:boxCornerRadiusBottomEnd="12dp"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_calle"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:hint="Calle *"
+                    android:textColor="#1A1A1A"
+                    android:textColorHint="#CCCCCC"
+                    android:textSize="13sp"
+                    android:inputType="textCapWords" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Número exterior -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:boxStrokeColor="#F5732A"
+                app:boxStrokeWidth="1.5dp"
+                app:boxStrokeWidthFocused="1.5dp"
+                app:hintEnabled="false"
+                app:boxCornerRadiusTopStart="12dp"
+                app:boxCornerRadiusTopEnd="12dp"
+                app:boxCornerRadiusBottomStart="12dp"
+                app:boxCornerRadiusBottomEnd="12dp"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_num_ext"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:hint="No. ext."
+                    android:textColor="#1A1A1A"
+                    android:textColorHint="#CCCCCC"
+                    android:textSize="13sp"
+                    android:inputType="textCapCharacters" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </LinearLayout>
+
+        <!-- Número interior (opcional) -->
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="16dp"
-            app:boxStrokeColor="#F5A623"
-            app:boxStrokeWidth="1dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="10dp"
+            app:boxStrokeColor="#F5732A"
+            app:boxStrokeWidth="1.5dp"
+            app:boxStrokeWidthFocused="1.5dp"
             app:hintEnabled="false"
+            app:boxCornerRadiusTopStart="12dp"
+            app:boxCornerRadiusTopEnd="12dp"
+            app:boxCornerRadiusBottomStart="12dp"
+            app:boxCornerRadiusBottomEnd="12dp"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_direccion"
+                android:id="@+id/et_num_int"
                 android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:hint="Número interior / Depto. (opcional)"
+                android:textColor="#1A1A1A"
+                android:textColorHint="#CCCCCC"
+                android:textSize="13sp"
+                android:inputType="textCapCharacters" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Colonia -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="10dp"
+            app:boxStrokeColor="#F5732A"
+            app:boxStrokeWidth="1.5dp"
+            app:boxStrokeWidthFocused="1.5dp"
+            app:hintEnabled="false"
+            app:boxCornerRadiusTopStart="12dp"
+            app:boxCornerRadiusTopEnd="12dp"
+            app:boxCornerRadiusBottomStart="12dp"
+            app:boxCornerRadiusBottomEnd="12dp"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_colonia"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:hint="Colonia *"
+                android:textColor="#1A1A1A"
+                android:textColorHint="#CCCCCC"
+                android:textSize="13sp"
+                android:inputType="textCapWords" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Fila: Ciudad + Estado -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="10dp">
+
+            <!-- Ciudad -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:hint="Ej: Av. Constitución 100, Monterrey"
-                android:textColor="#212121"
-                android:textColorHint="#AAAAAA"
-                android:textSize="14sp"
-                android:inputType="textPostalAddress" />
+                android:layout_weight="1"
+                android:layout_marginEnd="8dp"
+                app:boxStrokeColor="#F5732A"
+                app:boxStrokeWidth="1.5dp"
+                app:boxStrokeWidthFocused="1.5dp"
+                app:hintEnabled="false"
+                app:boxCornerRadiusTopStart="12dp"
+                app:boxCornerRadiusTopEnd="12dp"
+                app:boxCornerRadiusBottomStart="12dp"
+                app:boxCornerRadiusBottomEnd="12dp"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_ciudad"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:hint="Ciudad *"
+                    android:textColor="#1A1A1A"
+                    android:textColorHint="#CCCCCC"
+                    android:textSize="13sp"
+                    android:inputType="textCapWords" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Estado -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:boxStrokeColor="#F5732A"
+                app:boxStrokeWidth="1.5dp"
+                app:boxStrokeWidthFocused="1.5dp"
+                app:hintEnabled="false"
+                app:boxCornerRadiusTopStart="12dp"
+                app:boxCornerRadiusTopEnd="12dp"
+                app:boxCornerRadiusBottomStart="12dp"
+                app:boxCornerRadiusBottomEnd="12dp"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_estado"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:hint="Estado *"
+                    android:textColor="#1A1A1A"
+                    android:textColorHint="#CCCCCC"
+                    android:textSize="13sp"
+                    android:inputType="textCapWords" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </LinearLayout>
+
+        <!-- País -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="20dp"
+            app:boxStrokeColor="#F5732A"
+            app:boxStrokeWidth="1.5dp"
+            app:boxStrokeWidthFocused="1.5dp"
+            app:hintEnabled="false"
+            app:boxCornerRadiusTopStart="12dp"
+            app:boxCornerRadiusTopEnd="12dp"
+            app:boxCornerRadiusBottomStart="12dp"
+            app:boxCornerRadiusBottomEnd="12dp"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_pais"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:hint="País *"
+                android:text="México"
+                android:textColor="#1A1A1A"
+                android:textColorHint="#CCCCCC"
+                android:textSize="13sp"
+                android:inputType="textCapWords" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -160,53 +413,60 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Precio (MXN) *"
-            android:textColor="#212121"
-            android:textSize="13sp"
+            android:textColor="#1A1A1A"
+            android:textSize="14sp"
             android:textStyle="bold"
-            android:paddingStart="16dp"
-            android:layout_marginBottom="4dp" />
+            android:paddingStart="20dp"
+            android:layout_marginBottom="8dp" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="20dp"
-            app:boxStrokeColor="#F5A623"
-            app:boxStrokeWidth="1dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="24dp"
+            app:boxStrokeColor="#F5732A"
+            app:boxStrokeWidth="1.5dp"
+            app:boxStrokeWidthFocused="1.5dp"
             app:hintEnabled="false"
+            app:startIconDrawable="@android:drawable/ic_menu_compass"
+            app:startIconTint="#F5732A"
+            app:boxCornerRadiusTopStart="12dp"
+            app:boxCornerRadiusTopEnd="12dp"
+            app:boxCornerRadiusBottomStart="12dp"
+            app:boxCornerRadiusBottomEnd="12dp"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_precio"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Ej: 15000"
-                android:textColor="#212121"
-                android:textColorHint="#AAAAAA"
+                android:layout_height="56dp"
+                android:hint="Ej. 15000"
+                android:textColor="#1A1A1A"
+                android:textColorHint="#CCCCCC"
                 android:textSize="14sp"
                 android:inputType="numberDecimal" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- ── Sección Fotos ── -->
+        <!-- ── Fotos ── -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Fotos (máx. 4)"
-            android:textColor="#212121"
-            android:textSize="13sp"
+            android:textColor="#1A1A1A"
+            android:textSize="14sp"
             android:textStyle="bold"
-            android:paddingStart="16dp"
-            android:layout_marginBottom="8dp" />
+            android:paddingStart="20dp"
+            android:layout_marginBottom="12dp" />
 
-        <!-- Grid 2x2 de fotos -->
+        <!-- Grid 2x2 -->
         <GridLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="20dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="24dp"
             android:columnCount="2"
             android:rowCount="2"
             android:useDefaultMargins="false">
@@ -215,11 +475,11 @@
             <FrameLayout
                 android:id="@+id/frame_foto_1"
                 android:layout_width="0dp"
-                android:layout_height="100dp"
+                android:layout_height="130dp"
                 android:layout_columnWeight="1"
                 android:layout_rowWeight="1"
-                android:layout_margin="4dp"
-                android:background="#F2F2F2"
+                android:layout_margin="5dp"
+                android:background="@drawable/bg_photo_slot"
                 android:foreground="?attr/selectableItemBackground">
 
                 <ImageView
@@ -236,33 +496,40 @@
                     android:orientation="vertical"
                     android:gravity="center">
 
-                    <ImageView
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:src="@android:drawable/ic_input_add"
-                        android:tint="#CCCCCC" />
+                    <FrameLayout
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:background="@drawable/bg_camera_circle">
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@android:drawable/ic_menu_camera"
+                            android:tint="#F5732A"
+                            android:layout_gravity="center" />
+                    </FrameLayout>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Agregar foto"
-                        android:textColor="#CCCCCC"
-                        android:textSize="11sp"
-                        android:layout_marginTop="4dp" />
+                        android:textColor="#BBBBBB"
+                        android:textSize="12sp"
+                        android:layout_marginTop="8dp" />
 
                 </LinearLayout>
 
                 <ImageView
                     android:id="@+id/btn_remove_1"
-                    android:layout_width="22dp"
-                    android:layout_height="22dp"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
                     android:layout_gravity="top|end"
-                    android:layout_margin="4dp"
+                    android:layout_margin="6dp"
                     android:src="@android:drawable/ic_menu_close_clear_cancel"
                     android:tint="#FFFFFF"
-                    android:background="#88000000"
+                    android:background="@drawable/bg_remove_btn"
                     android:visibility="gone"
-                    android:padding="3dp" />
+                    android:padding="4dp"
+                    android:contentDescription="Eliminar foto" />
 
             </FrameLayout>
 
@@ -270,11 +537,11 @@
             <FrameLayout
                 android:id="@+id/frame_foto_2"
                 android:layout_width="0dp"
-                android:layout_height="100dp"
+                android:layout_height="130dp"
                 android:layout_columnWeight="1"
                 android:layout_rowWeight="1"
-                android:layout_margin="4dp"
-                android:background="#F2F2F2"
+                android:layout_margin="5dp"
+                android:background="@drawable/bg_photo_slot"
                 android:foreground="?attr/selectableItemBackground">
 
                 <ImageView
@@ -291,33 +558,40 @@
                     android:orientation="vertical"
                     android:gravity="center">
 
-                    <ImageView
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:src="@android:drawable/ic_input_add"
-                        android:tint="#CCCCCC" />
+                    <FrameLayout
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:background="@drawable/bg_camera_circle">
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@android:drawable/ic_menu_camera"
+                            android:tint="#F5732A"
+                            android:layout_gravity="center" />
+                    </FrameLayout>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Agregar foto"
-                        android:textColor="#CCCCCC"
-                        android:textSize="11sp"
-                        android:layout_marginTop="4dp" />
+                        android:textColor="#BBBBBB"
+                        android:textSize="12sp"
+                        android:layout_marginTop="8dp" />
 
                 </LinearLayout>
 
                 <ImageView
                     android:id="@+id/btn_remove_2"
-                    android:layout_width="22dp"
-                    android:layout_height="22dp"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
                     android:layout_gravity="top|end"
-                    android:layout_margin="4dp"
+                    android:layout_margin="6dp"
                     android:src="@android:drawable/ic_menu_close_clear_cancel"
                     android:tint="#FFFFFF"
-                    android:background="#88000000"
+                    android:background="@drawable/bg_remove_btn"
                     android:visibility="gone"
-                    android:padding="3dp" />
+                    android:padding="4dp"
+                    android:contentDescription="Eliminar foto" />
 
             </FrameLayout>
 
@@ -325,11 +599,11 @@
             <FrameLayout
                 android:id="@+id/frame_foto_3"
                 android:layout_width="0dp"
-                android:layout_height="100dp"
+                android:layout_height="130dp"
                 android:layout_columnWeight="1"
                 android:layout_rowWeight="1"
-                android:layout_margin="4dp"
-                android:background="#F2F2F2"
+                android:layout_margin="5dp"
+                android:background="@drawable/bg_photo_slot"
                 android:foreground="?attr/selectableItemBackground">
 
                 <ImageView
@@ -346,33 +620,40 @@
                     android:orientation="vertical"
                     android:gravity="center">
 
-                    <ImageView
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:src="@android:drawable/ic_input_add"
-                        android:tint="#CCCCCC" />
+                    <FrameLayout
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:background="@drawable/bg_camera_circle">
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@android:drawable/ic_menu_camera"
+                            android:tint="#F5732A"
+                            android:layout_gravity="center" />
+                    </FrameLayout>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Agregar foto"
-                        android:textColor="#CCCCCC"
-                        android:textSize="11sp"
-                        android:layout_marginTop="4dp" />
+                        android:textColor="#BBBBBB"
+                        android:textSize="12sp"
+                        android:layout_marginTop="8dp" />
 
                 </LinearLayout>
 
                 <ImageView
                     android:id="@+id/btn_remove_3"
-                    android:layout_width="22dp"
-                    android:layout_height="22dp"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
                     android:layout_gravity="top|end"
-                    android:layout_margin="4dp"
+                    android:layout_margin="6dp"
                     android:src="@android:drawable/ic_menu_close_clear_cancel"
                     android:tint="#FFFFFF"
-                    android:background="#88000000"
+                    android:background="@drawable/bg_remove_btn"
                     android:visibility="gone"
-                    android:padding="3dp" />
+                    android:padding="4dp"
+                    android:contentDescription="Eliminar foto" />
 
             </FrameLayout>
 
@@ -380,11 +661,11 @@
             <FrameLayout
                 android:id="@+id/frame_foto_4"
                 android:layout_width="0dp"
-                android:layout_height="100dp"
+                android:layout_height="130dp"
                 android:layout_columnWeight="1"
                 android:layout_rowWeight="1"
-                android:layout_margin="4dp"
-                android:background="#F2F2F2"
+                android:layout_margin="5dp"
+                android:background="@drawable/bg_photo_slot"
                 android:foreground="?attr/selectableItemBackground">
 
                 <ImageView
@@ -401,50 +682,64 @@
                     android:orientation="vertical"
                     android:gravity="center">
 
-                    <ImageView
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:src="@android:drawable/ic_input_add"
-                        android:tint="#CCCCCC" />
+                    <FrameLayout
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:background="@drawable/bg_camera_circle">
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@android:drawable/ic_menu_camera"
+                            android:tint="#F5732A"
+                            android:layout_gravity="center" />
+                    </FrameLayout>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Agregar foto"
-                        android:textColor="#CCCCCC"
-                        android:textSize="11sp"
-                        android:layout_marginTop="4dp" />
+                        android:textColor="#BBBBBB"
+                        android:textSize="12sp"
+                        android:layout_marginTop="8dp" />
 
                 </LinearLayout>
 
                 <ImageView
                     android:id="@+id/btn_remove_4"
-                    android:layout_width="22dp"
-                    android:layout_height="22dp"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
                     android:layout_gravity="top|end"
-                    android:layout_margin="4dp"
+                    android:layout_margin="6dp"
                     android:src="@android:drawable/ic_menu_close_clear_cancel"
                     android:tint="#FFFFFF"
-                    android:background="#88000000"
+                    android:background="@drawable/bg_remove_btn"
                     android:visibility="gone"
-                    android:padding="3dp" />
+                    android:padding="4dp"
+                    android:contentDescription="Eliminar foto" />
 
             </FrameLayout>
 
         </GridLayout>
 
-        <!-- Botón publicar -->
-        <Button
+        <!-- ── Botón publicar ── -->
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_publicar"
             android:layout_width="match_parent"
-            android:layout_height="52dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
+            android:layout_height="56dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
             android:text="PUBLICAR PROPIEDAD"
             android:textColor="#FFFFFF"
             android:textStyle="bold"
-            android:letterSpacing="0.05"
-            android:background="#F5A623" />
+            android:textSize="15sp"
+            android:letterSpacing="0.06"
+            app:icon="@android:drawable/ic_menu_send"
+            app:iconGravity="start"
+            app:iconTint="#FFFFFF"
+            app:iconPadding="10dp"
+            app:backgroundTint="#F5732A"
+            app:cornerRadius="14dp"
+            app:elevation="4dp" />
 
     </LinearLayout>
 
