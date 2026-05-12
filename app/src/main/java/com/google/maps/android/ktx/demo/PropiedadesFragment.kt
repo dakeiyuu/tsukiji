@@ -17,6 +17,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -28,71 +29,39 @@ data class PropiedadItem(
     val direccion: String,
     val precio: String,
     val tipo: String,
-    val fotos: List<Uri> = emptyList()
+    val fotos: List<Uri> = emptyList(),
+    val descripcion: String = ""
 )
 
 class PropiedadesFragment : Fragment() {
 
-    // ── Datos de ciudades y países disponibles en Tsukiji ─────────────────────
-
-    /**
-     * Mapa de País → lista de ciudades disponibles en Tsukiji.
-     * Derivado directamente de las zonas en generateSampleBusinessData().
-     */
     private val ciudadesPorPais: Map<String, List<String>> = linkedMapOf(
         "México" to listOf(
-            "Monterrey",
-            "San Pedro Garza García",
-            "Guadalupe",
-            "San Nicolás de los Garza",
-            "Apodaca",
-            "General Escobedo",
-            "Santa Catarina",
-            "García",
-            "Juárez",
-            "Cadereyta Jiménez",
-            "Saltillo",
-            "Ciudad de México",
-            "Ecatepec",
-            "Nezahualcóyotl",
-            "Tlalnepantla",
-            "Naucalpan"
+            "Monterrey", "San Pedro Garza García", "Guadalupe",
+            "San Nicolás de los Garza", "Apodaca", "General Escobedo",
+            "Santa Catarina", "García", "Juárez", "Cadereyta Jiménez",
+            "Saltillo", "Ciudad de México", "Ecatepec", "Nezahualcóyotl",
+            "Tlalnepantla", "Naucalpan"
         ),
         "Estados Unidos" to listOf(
-            "Nueva York",
-            "Los Ángeles",
-            "Burbank",
-            "Long Beach",
-            "Pasadena",
-            "Inglewood",
-            "Compton"
+            "Nueva York", "Los Ángeles", "Burbank", "Long Beach",
+            "Pasadena", "Inglewood", "Compton"
         ),
-        "Reino Unido" to listOf(
-            "Londres"
-        ),
+        "Reino Unido" to listOf("Londres"),
         "Francia" to listOf(
-            "París",
-            "Saint-Denis",
-            "Boulogne-Billancourt",
-            "Levallois-Perret"
+            "París", "Saint-Denis", "Boulogne-Billancourt", "Levallois-Perret"
         ),
-        "Japón" to listOf(
-            "Tokio",
-            "Yokohama",
-            "Osaka"
-        )
+        "Japón" to listOf("Tokio", "Yokohama", "Osaka")
     )
 
     private val paises: List<String> get() = ciudadesPorPais.keys.toList()
 
-    // ── Estado del fragment ───────────────────────────────────────────────────
-
     private val propiedades = mutableListOf(
-        PropiedadItem("Local Comercial Centro", "Av. Constitución 100, Col. Centro, Monterrey, NL, México", "$15,000 MXN/mes", "Renta"),
-        PropiedadItem("Oficina San Pedro", "Blvd. Antonio L. Rodríguez 3000, Col. Santa María, San Pedro Garza García, NL, México", "$25,000 MXN/mes", "Renta"),
-        PropiedadItem("Bodega Industrial", "Carretera a Laredo km 12, Col. Industrial, Monterrey, NL, México", "$2,500,000 MXN", "Venta"),
-        PropiedadItem("Local en Plaza", "Plaza Fiesta San Agustín, Col. Valle Oriente, San Pedro Garza García, NL, México", "$18,000 MXN/mes", "Renta"),
-        PropiedadItem("Terreno Comercial", "Av. Eugenio Garza Sada 3000, Col. Tecnológico, Monterrey, NL, México", "$8,000,000 MXN", "Venta")
+        PropiedadItem("Local Comercial Centro", "Av. Constitución 100, Col. Centro, Monterrey, NL, México", "$15,000 MXN/mes", "Renta", descripcion = "Local en excelente ubicación en el centro de Monterrey. 120 m², planta baja, dos accesos, baño completo y bodega."),
+        PropiedadItem("Oficina San Pedro", "Blvd. Antonio L. Rodríguez 3000, Col. Santa María, San Pedro Garza García, NL, México", "$25,000 MXN/mes", "Renta", descripcion = "Oficina ejecutiva en torre corporativa. 85 m², piso 8, vista panorámica, estacionamiento incluido."),
+        PropiedadItem("Bodega Industrial", "Carretera a Laredo km 12, Col. Industrial, Monterrey, NL, México", "$2,500,000 MXN", "Venta", descripcion = "Bodega industrial de 800 m², altura 8 metros, andén de carga, oficinas administrativas y vigilancia 24/7."),
+        PropiedadItem("Local en Plaza", "Plaza Fiesta San Agustín, Col. Valle Oriente, San Pedro Garza García, NL, México", "$18,000 MXN/mes", "Renta", descripcion = "Local dentro de plaza comercial de alto tráfico. 65 m², zona de comida, con instalaciones de gas y electricidad trifásica."),
+        PropiedadItem("Terreno Comercial", "Av. Eugenio Garza Sada 3000, Col. Tecnológico, Monterrey, NL, México", "$8,000,000 MXN", "Venta", descripcion = "Terreno esquinero de 600 m² en avenida principal. Uso de suelo comercial, frente de 20 metros, ideal para desarrollo.")
     )
 
     private lateinit var adapter: PropiedadAdapter
@@ -115,16 +84,19 @@ class PropiedadesFragment : Fragment() {
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val uri = result.data?.data ?: return@registerForActivityResult
-                try { requireContext().contentResolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION) } catch (_: Exception) {}
+                try {
+                    requireContext().contentResolver.takePersistableUriPermission(
+                        uri, Intent.FLAG_GRANT_READ_URI_PERMISSION
+                    )
+                } catch (_: Exception) {}
                 fotoUris[slotSeleccionado] = uri
                 mostrarFotoEnSlot(slotSeleccionado, uri)
             }
         }
 
-    // ── Lifecycle ─────────────────────────────────────────────────────────────
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-        inflater.inflate(R.layout.fragment_propiedades, container, false)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View? = inflater.inflate(R.layout.fragment_propiedades, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -141,9 +113,7 @@ class PropiedadesFragment : Fragment() {
                 adapter.updateData(getFilteredList())
                 Toast.makeText(requireContext(), "Propiedad eliminada", Toast.LENGTH_SHORT).show()
             },
-            onClick = { propiedad ->
-                showDetalleDialog(propiedad)
-            }
+            onClick = { propiedad -> showDetalleDialog(propiedad) }
         )
 
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
@@ -177,9 +147,9 @@ class PropiedadesFragment : Fragment() {
             .setView(view)
             .create()
 
-        view.findViewById<TextView>(R.id.tv_detalle_nombre).text = propiedad.nombre
+        view.findViewById<TextView>(R.id.tv_detalle_nombre).text  = propiedad.nombre
         view.findViewById<TextView>(R.id.tv_detalle_direccion).text = propiedad.direccion
-        view.findViewById<TextView>(R.id.tv_detalle_precio).text = propiedad.precio
+        view.findViewById<TextView>(R.id.tv_detalle_precio).text   = propiedad.precio
         view.findViewById<TextView>(R.id.tv_detalle_precio_full).text = propiedad.precio
 
         val tvTipo = view.findViewById<TextView>(R.id.tv_detalle_tipo)
@@ -188,6 +158,17 @@ class PropiedadesFragment : Fragment() {
             if (propiedad.tipo == "Renta") R.drawable.chip_renta_bg else R.drawable.chip_venta_bg
         )
 
+        // Descripción
+        val cardDesc = view.findViewById<CardView>(R.id.card_descripcion)
+        val tvDesc   = view.findViewById<TextView>(R.id.tv_detalle_descripcion)
+        if (propiedad.descripcion.isNotEmpty()) {
+            cardDesc.visibility = View.VISIBLE
+            tvDesc.text = propiedad.descripcion
+        } else {
+            cardDesc.visibility = View.GONE
+        }
+
+        // Fotos grandes
         val llFotos    = view.findViewById<LinearLayout>(R.id.ll_fotos)
         val llSinFotos = view.findViewById<LinearLayout>(R.id.ll_sin_fotos)
         val hsvFotos   = view.findViewById<View>(R.id.hsv_fotos)
@@ -198,11 +179,13 @@ class PropiedadesFragment : Fragment() {
         } else {
             hsvFotos.visibility   = View.VISIBLE
             llSinFotos.visibility = View.GONE
+            val fotoPxWidth = (300 * resources.displayMetrics.density).toInt()
             propiedad.fotos.forEach { uri ->
                 val img = ImageView(requireContext()).apply {
-                    layoutParams = LinearLayout.LayoutParams(400, LinearLayout.LayoutParams.MATCH_PARENT).apply {
-                        marginEnd = 12
-                    }
+                    layoutParams = LinearLayout.LayoutParams(
+                        fotoPxWidth,
+                        LinearLayout.LayoutParams.MATCH_PARENT
+                    ).apply { marginEnd = 8 }
                     scaleType = ImageView.ScaleType.CENTER_CROP
                     setImageURI(uri)
                 }
@@ -222,7 +205,8 @@ class PropiedadesFragment : Fragment() {
     private fun showAddPropertyDialog() {
         fotoUris.fill(null)
 
-        val inflatedView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_agregar_propiedad, null)
+        val inflatedView = LayoutInflater.from(requireContext())
+            .inflate(R.layout.dialog_agregar_propiedad, null)
         dialogView = inflatedView
 
         val dialog = android.app.AlertDialog.Builder(requireContext())
@@ -233,34 +217,27 @@ class PropiedadesFragment : Fragment() {
         val btnPublicar = inflatedView.findViewById<com.google.android.material.button.MaterialButton>(R.id.btn_publicar)
         val btnCerrar   = inflatedView.findViewById<ImageView>(R.id.btn_cerrar_dialog)
 
-        val tilNombre  = inflatedView.findViewById<TextInputLayout>(R.id.til_nombre)
-        val tilCalle   = inflatedView.findViewById<TextInputLayout>(R.id.til_calle)
-        val tilNumExt  = inflatedView.findViewById<TextInputLayout>(R.id.til_numero_ext)
-        val tilNumInt  = inflatedView.findViewById<TextInputLayout>(R.id.til_numero_int)
-        val tilColonia = inflatedView.findViewById<TextInputLayout>(R.id.til_colonia)
-        val tilCp      = inflatedView.findViewById<TextInputLayout>(R.id.til_cp)
-        val tilEstado  = inflatedView.findViewById<TextInputLayout>(R.id.til_estado)
-        val tilPrecio  = inflatedView.findViewById<TextInputLayout>(R.id.til_precio)
+        val tilNombre      = inflatedView.findViewById<TextInputLayout>(R.id.til_nombre)
+        val tilDescripcion = inflatedView.findViewById<TextInputLayout>(R.id.til_descripcion)
+        val tilCalle       = inflatedView.findViewById<TextInputLayout>(R.id.til_calle)
+        val tilNumExt      = inflatedView.findViewById<TextInputLayout>(R.id.til_numero_ext)
+        val tilNumInt      = inflatedView.findViewById<TextInputLayout>(R.id.til_numero_int)
+        val tilColonia     = inflatedView.findViewById<TextInputLayout>(R.id.til_colonia)
+        val tilCp          = inflatedView.findViewById<TextInputLayout>(R.id.til_cp)
+        val tilEstado      = inflatedView.findViewById<TextInputLayout>(R.id.til_estado)
+        val tilPrecio      = inflatedView.findViewById<TextInputLayout>(R.id.til_precio)
 
-        // Dropdowns
         val actvCiudad = inflatedView.findViewById<AutoCompleteTextView>(R.id.et_ciudad)
         val actvPais   = inflatedView.findViewById<AutoCompleteTextView>(R.id.et_pais)
 
-        // ── Configurar dropdown de País ──
-        val paisAdapter = ArrayAdapter(
-            requireContext(),
-            android.R.layout.simple_dropdown_item_1line,
-            paises
-        )
+        val paisAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, paises)
         actvPais.setAdapter(paisAdapter)
 
-        // Cuando cambia el país, actualizar las ciudades disponibles
         actvPais.setOnItemClickListener { _, _, position, _ ->
             val paisSeleccionado = paises[position]
             actualizarDropdownCiudad(actvCiudad, paisSeleccionado)
         }
 
-        // ── Configurar dropdown de Ciudad (vacío hasta seleccionar país) ──
         actualizarDropdownCiudad(actvCiudad, null)
 
         toggleGroup.check(R.id.btn_venta)
@@ -269,24 +246,23 @@ class PropiedadesFragment : Fragment() {
         configurarSlotsFoto(inflatedView)
 
         btnPublicar.setOnClickListener {
-            val nombre  = tilNombre?.editText?.text?.toString()?.trim() ?: ""
-            val calle   = tilCalle?.editText?.text?.toString()?.trim() ?: ""
-            val numExt  = tilNumExt?.editText?.text?.toString()?.trim() ?: ""
-            val numInt  = tilNumInt?.editText?.text?.toString()?.trim() ?: ""
-            val colonia = tilColonia?.editText?.text?.toString()?.trim() ?: ""
-            val ciudad  = actvCiudad.text.toString().trim()
-            val cp      = tilCp?.editText?.text?.toString()?.trim() ?: ""
-            val estado  = tilEstado?.editText?.text?.toString()?.trim() ?: ""
-            val pais    = actvPais.text.toString().trim()
-            val precio  = tilPrecio?.editText?.text?.toString()?.trim() ?: ""
+            val nombre      = tilNombre?.editText?.text?.toString()?.trim() ?: ""
+            val descripcion = tilDescripcion?.editText?.text?.toString()?.trim() ?: ""
+            val calle       = tilCalle?.editText?.text?.toString()?.trim() ?: ""
+            val numExt      = tilNumExt?.editText?.text?.toString()?.trim() ?: ""
+            val numInt      = tilNumInt?.editText?.text?.toString()?.trim() ?: ""
+            val colonia     = tilColonia?.editText?.text?.toString()?.trim() ?: ""
+            val ciudad      = actvCiudad.text.toString().trim()
+            val cp          = tilCp?.editText?.text?.toString()?.trim() ?: ""
+            val estado      = tilEstado?.editText?.text?.toString()?.trim() ?: ""
+            val pais        = actvPais.text.toString().trim()
+            val precio      = tilPrecio?.editText?.text?.toString()?.trim() ?: ""
 
-            // Validar campos obligatorios
             if (nombre.isEmpty() || calle.isEmpty() || numExt.isEmpty() || ciudad.isEmpty() || precio.isEmpty()) {
                 Toast.makeText(requireContext(), "Completa los campos obligatorios", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            // Validar que la ciudad seleccionada pertenece al país elegido
             if (pais.isNotEmpty() && ciudad.isNotEmpty()) {
                 val ciudadesDelPais = ciudadesPorPais[pais] ?: emptyList()
                 if (!ciudadesDelPais.contains(ciudad)) {
@@ -295,11 +271,11 @@ class PropiedadesFragment : Fragment() {
                 }
             }
 
-            val numStr         = if (numInt.isNotEmpty()) "$numExt Int. $numInt" else numExt
-            val coloniaStr     = if (colonia.isNotEmpty()) "Col. $colonia, " else ""
-            val cpStr          = if (cp.isNotEmpty()) "C.P. $cp, " else ""
-            val estadoStr      = if (estado.isNotEmpty()) "$estado, " else ""
-            val paisStr        = if (pais.isNotEmpty()) pais else ""
+            val numStr        = if (numInt.isNotEmpty()) "$numExt Int. $numInt" else numExt
+            val coloniaStr    = if (colonia.isNotEmpty()) "Col. $colonia, " else ""
+            val cpStr         = if (cp.isNotEmpty()) "C.P. $cp, " else ""
+            val estadoStr     = if (estado.isNotEmpty()) "$estado, " else ""
+            val paisStr       = if (pais.isNotEmpty()) pais else ""
             val direccionCompleta = "$calle $numStr, ${coloniaStr}${ciudad}, ${estadoStr}${cpStr}${paisStr}".trim().trimEnd(',')
 
             val tipoSeleccionado = when (toggleGroup.checkedButtonId) {
@@ -310,11 +286,12 @@ class PropiedadesFragment : Fragment() {
             val fotosGuardadas = fotoUris.filterNotNull()
 
             propiedades.add(0, PropiedadItem(
-                nombre    = nombre,
-                direccion = direccionCompleta,
-                precio    = "$$precio MXN${if (tipoSeleccionado == "Renta") "/mes" else ""}",
-                tipo      = tipoSeleccionado,
-                fotos     = fotosGuardadas
+                nombre      = nombre,
+                direccion   = direccionCompleta,
+                precio      = "$$precio MXN${if (tipoSeleccionado == "Renta") "/mes" else ""}",
+                tipo        = tipoSeleccionado,
+                fotos       = fotosGuardadas,
+                descripcion = descripcion
             ))
 
             adapter.updateData(getFilteredList())
@@ -329,25 +306,14 @@ class PropiedadesFragment : Fragment() {
         dialog.show()
     }
 
-    /**
-     * Actualiza el adapter del dropdown de ciudades según el país seleccionado.
-     * Si [pais] es null, muestra todas las ciudades disponibles en Tsukiji.
-     */
     private fun actualizarDropdownCiudad(actvCiudad: AutoCompleteTextView, pais: String?) {
         val ciudades = if (pais != null) {
             ciudadesPorPais[pais] ?: emptyList()
         } else {
             ciudadesPorPais.values.flatten().distinct().sorted()
         }
-
-        val ciudadAdapter = ArrayAdapter(
-            requireContext(),
-            android.R.layout.simple_dropdown_item_1line,
-            ciudades
-        )
+        val ciudadAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, ciudades)
         actvCiudad.setAdapter(ciudadAdapter)
-
-        // Limpiar selección previa si el país cambió
         if (pais != null) actvCiudad.setText("", false)
     }
 
@@ -367,7 +333,8 @@ class PropiedadesFragment : Fragment() {
     }
 
     private fun abrirGaleria() {
-        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI).apply { type = "image/*" }
+        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+            .apply { type = "image/*" }
         pickImageLauncher.launch(intent)
     }
 
@@ -402,7 +369,10 @@ class PropiedadesFragment : Fragment() {
             val btnEliminar: ImageView = view.findViewById(R.id.btn_eliminar)
         }
 
-        fun updateData(newItems: List<PropiedadItem>) { items = newItems; notifyDataSetChanged() }
+        fun updateData(newItems: List<PropiedadItem>) {
+            items = newItems
+            notifyDataSetChanged()
+        }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
             ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_propiedad, parent, false))

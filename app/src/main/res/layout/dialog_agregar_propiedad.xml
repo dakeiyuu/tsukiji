@@ -4,13 +4,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#FFFFFF">
+    android:background="#FAFAFA">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingBottom="24dp">
+        android:paddingBottom="28dp">
 
         <!-- Handle -->
         <View
@@ -18,513 +18,328 @@
             android:layout_height="4dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="10dp"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="12dp"
             android:background="#DDDDDD" />
 
-        <!-- Título + botón cerrar -->
-        <LinearLayout
+        <!-- GALERÍA GRANDE -->
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:paddingStart="20dp"
-            android:paddingEnd="16dp"
-            android:layout_marginBottom="20dp">
+            android:layout_height="220dp"
+            android:background="#EEEEEE">
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Agregar propiedad"
-                android:textColor="#F5A623"
-                android:textSize="22sp"
-                android:textStyle="bold" />
-
-            <ImageView
-                android:id="@+id/btn_cerrar_dialog"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:src="@android:drawable/ic_menu_close_clear_cancel"
-                android:tint="#F5A623"
-                android:background="#FFF3E0"
-                android:padding="8dp" />
-
-        </LinearLayout>
-
-        <!-- Tipo de operación -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Tipo de operación"
-            android:textColor="#212121"
-            android:textSize="13sp"
-            android:textStyle="bold"
-            android:paddingStart="20dp"
-            android:layout_marginBottom="8dp" />
-
-        <com.google.android.material.button.MaterialButtonToggleGroup
-            android:id="@+id/toggle_tipo"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginBottom="20dp"
-            app:singleSelection="true"
-            app:selectionRequired="true">
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_venta"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="0dp"
+            <HorizontalScrollView
+                android:id="@+id/hsv_fotos"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="Venta"
-                android:textColor="#F5A623"
-                android:textSize="15sp"
-                app:strokeColor="#F5A623"
-                app:strokeWidth="1.5dp"
-                app:cornerRadius="12dp" />
+                android:scrollbars="none"
+                android:fillViewport="true">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_renta"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="0dp"
+                <LinearLayout
+                    android:id="@+id/ll_fotos"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal" />
+
+            </HorizontalScrollView>
+
+            <LinearLayout
+                android:id="@+id/ll_sin_fotos"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="Renta"
-                android:textColor="#888888"
-                android:textSize="15sp"
-                app:strokeColor="#DDDDDD"
-                app:strokeWidth="1.5dp"
-                app:cornerRadius="12dp" />
+                android:orientation="vertical"
+                android:gravity="center"
+                android:visibility="gone">
 
-        </com.google.android.material.button.MaterialButtonToggleGroup>
+                <ImageView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@android:drawable/ic_menu_camera"
+                    android:tint="#CCCCCC" />
 
-        <!-- Nombre -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Nombre o título *"
-            android:textColor="#212121"
-            android:textSize="13sp"
-            android:textStyle="bold"
-            android:paddingStart="20dp"
-            android:layout_marginBottom="4dp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Sin fotos disponibles"
+                    android:textColor="#AAAAAA"
+                    android:textSize="13sp"
+                    android:layout_marginTop="8dp" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/til_nombre"
+            </LinearLayout>
+
+        </FrameLayout>
+
+        <!-- CARD: nombre, tipo, precio -->
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginBottom="16dp"
-            app:boxStrokeColor="#F5A623"
-            app:boxCornerRadiusTopStart="12dp"
-            app:boxCornerRadiusTopEnd="12dp"
-            app:boxCornerRadiusBottomStart="12dp"
-            app:boxCornerRadiusBottomEnd="12dp"
-            app:startIconDrawable="@android:drawable/ic_menu_myplaces"
-            app:startIconTint="#F5A623"
-            app:hintEnabled="false"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="16dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp"
+            app:cardBackgroundColor="#FFFFFF">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_nombre"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Ej. Local Comercial Centro"
-                android:textColor="#212121"
-                android:textColorHint="#AAAAAA"
-                android:textSize="14sp"
-                android:inputType="textCapWords"
-                android:padding="14dp" />
+                android:orientation="vertical"
+                android:padding="16dp">
 
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <!-- Dirección label -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Dirección *"
-            android:textColor="#212121"
-            android:textSize="13sp"
-            android:textStyle="bold"
-            android:paddingStart="20dp"
-            android:layout_marginBottom="4dp" />
-
-        <!-- Calle -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/til_calle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginBottom="10dp"
-            app:boxStrokeColor="#F5A623"
-            app:boxCornerRadiusTopStart="12dp"
-            app:boxCornerRadiusTopEnd="12dp"
-            app:boxCornerRadiusBottomStart="12dp"
-            app:boxCornerRadiusBottomEnd="12dp"
-            app:startIconDrawable="@android:drawable/ic_menu_mylocation"
-            app:startIconTint="#F5A623"
-            app:hintEnabled="false"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_calle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Calle"
-                android:textColor="#212121"
-                android:textColorHint="#AAAAAA"
-                android:textSize="14sp"
-                android:inputType="textPostalAddress"
-                android:padding="14dp" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <!-- Núm. exterior e interior -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginBottom="10dp">
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/til_numero_ext"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginEnd="6dp"
-                app:boxStrokeColor="#F5A623"
-                app:boxCornerRadiusTopStart="12dp"
-                app:boxCornerRadiusTopEnd="12dp"
-                app:boxCornerRadiusBottomStart="12dp"
-                app:boxCornerRadiusBottomEnd="12dp"
-                app:hintEnabled="false"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/et_numero_ext"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Núm. exterior"
-                    android:textColor="#212121"
-                    android:textColorHint="#AAAAAA"
-                    android:textSize="13sp"
-                    android:padding="14dp" />
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="12dp">
 
-            </com.google.android.material.textfield.TextInputLayout>
+                    <TextView
+                        android:id="@+id/tv_detalle_nombre"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textColor="#1A1A1A"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:lineSpacingMultiplier="1.1" />
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/til_numero_int"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginStart="6dp"
-                app:boxStrokeColor="#F5A623"
-                app:boxCornerRadiusTopStart="12dp"
-                app:boxCornerRadiusTopEnd="12dp"
-                app:boxCornerRadiusBottomStart="12dp"
-                app:boxCornerRadiusBottomEnd="12dp"
-                app:hintEnabled="false"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                    <ImageView
+                        android:id="@+id/btn_cerrar_detalle"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:src="@android:drawable/ic_menu_close_clear_cancel"
+                        android:tint="#F5A623"
+                        android:background="#FFF3E0"
+                        android:padding="8dp" />
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/et_numero_int"
+                </LinearLayout>
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Núm. interior (opt.)"
-                    android:textColor="#212121"
-                    android:textColorHint="#AAAAAA"
-                    android:textSize="13sp"
-                    android:padding="14dp" />
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
 
-            </com.google.android.material.textfield.TextInputLayout>
+                    <TextView
+                        android:id="@+id/tv_detalle_tipo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingStart="14dp"
+                        android:paddingEnd="14dp"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
+                        android:textColor="#FFFFFF"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:background="@drawable/chip_renta_bg" />
 
-        </LinearLayout>
+                    <TextView
+                        android:id="@+id/tv_detalle_precio"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:textColor="#F5A623"
+                        android:textSize="22sp"
+                        android:textStyle="bold" />
 
-        <!-- Colonia -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/til_colonia"
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <!-- CARD: descripción (se oculta si está vacía) -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_descripcion"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginBottom="10dp"
-            app:boxStrokeColor="#F5A623"
-            app:boxCornerRadiusTopStart="12dp"
-            app:boxCornerRadiusTopEnd="12dp"
-            app:boxCornerRadiusBottomStart="12dp"
-            app:boxCornerRadiusBottomEnd="12dp"
-            app:hintEnabled="false"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="12dp"
+            android:visibility="gone"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp"
+            app:cardBackgroundColor="#FFFFFF">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_colonia"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Colonia"
-                android:textColor="#212121"
-                android:textColorHint="#AAAAAA"
-                android:textSize="14sp"
-                android:inputType="textCapWords"
-                android:padding="14dp" />
+                android:orientation="vertical"
+                android:padding="16dp">
 
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <!-- Ciudad (dropdown) y CP -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginBottom="10dp">
-
-            <!-- Ciudad - ExposedDropdownMenu -->
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/til_ciudad"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginEnd="6dp"
-                app:boxStrokeColor="#F5A623"
-                app:boxCornerRadiusTopStart="12dp"
-                app:boxCornerRadiusTopEnd="12dp"
-                app:boxCornerRadiusBottomStart="12dp"
-                app:boxCornerRadiusBottomEnd="12dp"
-                app:hintEnabled="false"
-                app:endIconMode="dropdown_menu"
-                app:endIconTint="#F5A623"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
-
-                <AutoCompleteTextView
-                    android:id="@+id/et_ciudad"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Ciudad"
-                    android:textColor="#212121"
-                    android:textColorHint="#AAAAAA"
-                    android:textSize="13sp"
-                    android:padding="14dp"
-                    android:inputType="none"
-                    android:focusable="false"
-                    android:cursorVisible="false"
-                    android:saveEnabled="false" />
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="10dp">
 
-            </com.google.android.material.textfield.TextInputLayout>
+                    <View
+                        android:layout_width="4dp"
+                        android:layout_height="20dp"
+                        android:background="#F5A623"
+                        android:layout_marginEnd="10dp" />
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/til_cp"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginStart="6dp"
-                app:boxStrokeColor="#F5A623"
-                app:boxCornerRadiusTopStart="12dp"
-                app:boxCornerRadiusTopEnd="12dp"
-                app:boxCornerRadiusBottomStart="12dp"
-                app:boxCornerRadiusBottomEnd="12dp"
-                app:hintEnabled="false"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Descripción"
+                        android:textColor="#1A1A1A"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/et_cp"
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tv_detalle_descripcion"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="C.P."
-                    android:textColor="#212121"
-                    android:textColorHint="#AAAAAA"
-                    android:textSize="13sp"
-                    android:inputType="number"
-                    android:padding="14dp" />
+                    android:textColor="#555555"
+                    android:textSize="14sp"
+                    android:lineSpacingMultiplier="1.5" />
 
-            </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
 
-        </LinearLayout>
+        </androidx.cardview.widget.CardView>
 
-        <!-- Estado -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/til_estado"
+        <!-- CARD: ubicación -->
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginBottom="10dp"
-            app:boxStrokeColor="#F5A623"
-            app:boxCornerRadiusTopStart="12dp"
-            app:boxCornerRadiusTopEnd="12dp"
-            app:boxCornerRadiusBottomStart="12dp"
-            app:boxCornerRadiusBottomEnd="12dp"
-            app:hintEnabled="false"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="12dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp"
+            app:cardBackgroundColor="#FFFFFF">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_estado"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Estado / Provincia"
-                android:textColor="#212121"
-                android:textColorHint="#AAAAAA"
-                android:textSize="14sp"
-                android:inputType="textCapWords"
-                android:padding="14dp" />
+                android:orientation="vertical"
+                android:padding="16dp">
 
-        </com.google.android.material.textfield.TextInputLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="12dp">
 
-        <!-- País (dropdown) -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/til_pais"
+                    <View
+                        android:layout_width="4dp"
+                        android:layout_height="20dp"
+                        android:background="#F5A623"
+                        android:layout_marginEnd="10dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Ubicación"
+                        android:textColor="#1A1A1A"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="top"
+                    android:background="#FFF8F0"
+                    android:padding="12dp">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@android:drawable/ic_menu_mylocation"
+                        android:tint="#F5A623"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginTop="2dp" />
+
+                    <TextView
+                        android:id="@+id/tv_detalle_direccion"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textColor="#333333"
+                        android:textSize="14sp"
+                        android:lineSpacingMultiplier="1.4" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <!-- CARD: precio -->
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginBottom="20dp"
-            app:boxStrokeColor="#F5A623"
-            app:boxCornerRadiusTopStart="12dp"
-            app:boxCornerRadiusTopEnd="12dp"
-            app:boxCornerRadiusBottomStart="12dp"
-            app:boxCornerRadiusBottomEnd="12dp"
-            app:hintEnabled="false"
-            app:endIconMode="dropdown_menu"
-            app:endIconTint="#F5A623"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="12dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp"
+            app:cardBackgroundColor="#FFFFFF">
 
-            <AutoCompleteTextView
-                android:id="@+id/et_pais"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="País"
-                android:textColor="#212121"
-                android:textColorHint="#AAAAAA"
-                android:textSize="14sp"
-                android:padding="14dp"
-                android:inputType="none"
-                android:focusable="false"
-                android:cursorVisible="false"
-                android:saveEnabled="false" />
+                android:orientation="vertical"
+                android:padding="16dp">
 
-        </com.google.android.material.textfield.TextInputLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="12dp">
 
-        <!-- Precio -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Precio (MXN) *"
-            android:textColor="#212121"
-            android:textSize="13sp"
-            android:textStyle="bold"
-            android:paddingStart="20dp"
-            android:layout_marginBottom="4dp" />
+                    <View
+                        android:layout_width="4dp"
+                        android:layout_height="20dp"
+                        android:background="#F5A623"
+                        android:layout_marginEnd="10dp" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/til_precio"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginBottom="20dp"
-            app:boxStrokeColor="#F5A623"
-            app:boxCornerRadiusTopStart="12dp"
-            app:boxCornerRadiusTopEnd="12dp"
-            app:boxCornerRadiusBottomStart="12dp"
-            app:boxCornerRadiusBottomEnd="12dp"
-            app:startIconDrawable="@android:drawable/ic_menu_compass"
-            app:startIconTint="#F5A623"
-            app:hintEnabled="false"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Precio"
+                        android:textColor="#1A1A1A"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_precio"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Ej. 15000"
-                android:textColor="#212121"
-                android:textColorHint="#AAAAAA"
-                android:textSize="14sp"
-                android:inputType="numberDecimal"
-                android:padding="14dp" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <!-- Fotos -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Fotos (máx. 4)"
-            android:textColor="#212121"
-            android:textSize="13sp"
-            android:textStyle="bold"
-            android:paddingStart="20dp"
-            android:layout_marginBottom="8dp" />
-
-        <GridLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginBottom="24dp"
-            android:columnCount="2"
-            android:rowCount="2"
-            android:useDefaultMargins="false">
-
-            <FrameLayout android:id="@+id/frame_foto_1" android:layout_width="0dp" android:layout_height="110dp" android:layout_columnWeight="1" android:layout_rowWeight="1" android:layout_margin="5dp" android:background="#F5F5F5" android:foreground="?attr/selectableItemBackground">
-                <ImageView android:id="@+id/iv_foto_1" android:layout_width="match_parent" android:layout_height="match_parent" android:scaleType="centerCrop" android:visibility="gone" />
-                <LinearLayout android:id="@+id/placeholder_1" android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical" android:gravity="center">
-                    <FrameLayout android:layout_width="48dp" android:layout_height="48dp" android:background="#FFF3E0"><ImageView android:layout_width="28dp" android:layout_height="28dp" android:src="@android:drawable/ic_menu_camera" android:tint="#F5A623" android:layout_gravity="center" /></FrameLayout>
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Agregar foto" android:textColor="#AAAAAA" android:textSize="11sp" android:layout_marginTop="6dp" />
                 </LinearLayout>
-                <ImageView android:id="@+id/btn_remove_1" android:layout_width="22dp" android:layout_height="22dp" android:layout_gravity="top|end" android:layout_margin="4dp" android:src="@android:drawable/ic_menu_close_clear_cancel" android:tint="#FFFFFF" android:background="#88000000" android:visibility="gone" android:padding="3dp" />
-            </FrameLayout>
 
-            <FrameLayout android:id="@+id/frame_foto_2" android:layout_width="0dp" android:layout_height="110dp" android:layout_columnWeight="1" android:layout_rowWeight="1" android:layout_margin="5dp" android:background="#F5F5F5" android:foreground="?attr/selectableItemBackground">
-                <ImageView android:id="@+id/iv_foto_2" android:layout_width="match_parent" android:layout_height="match_parent" android:scaleType="centerCrop" android:visibility="gone" />
-                <LinearLayout android:id="@+id/placeholder_2" android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical" android:gravity="center">
-                    <FrameLayout android:layout_width="48dp" android:layout_height="48dp" android:background="#FFF3E0"><ImageView android:layout_width="28dp" android:layout_height="28dp" android:src="@android:drawable/ic_menu_camera" android:tint="#F5A623" android:layout_gravity="center" /></FrameLayout>
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Agregar foto" android:textColor="#AAAAAA" android:textSize="11sp" android:layout_marginTop="6dp" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:background="#FFF8F0"
+                    android:padding="12dp">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@android:drawable/ic_menu_compass"
+                        android:tint="#F5A623"
+                        android:layout_marginEnd="10dp" />
+
+                    <TextView
+                        android:id="@+id/tv_detalle_precio_full"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#F5A623"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
                 </LinearLayout>
-                <ImageView android:id="@+id/btn_remove_2" android:layout_width="22dp" android:layout_height="22dp" android:layout_gravity="top|end" android:layout_margin="4dp" android:src="@android:drawable/ic_menu_close_clear_cancel" android:tint="#FFFFFF" android:background="#88000000" android:visibility="gone" android:padding="3dp" />
-            </FrameLayout>
 
-            <FrameLayout android:id="@+id/frame_foto_3" android:layout_width="0dp" android:layout_height="110dp" android:layout_columnWeight="1" android:layout_rowWeight="1" android:layout_margin="5dp" android:background="#F5F5F5" android:foreground="?attr/selectableItemBackground">
-                <ImageView android:id="@+id/iv_foto_3" android:layout_width="match_parent" android:layout_height="match_parent" android:scaleType="centerCrop" android:visibility="gone" />
-                <LinearLayout android:id="@+id/placeholder_3" android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical" android:gravity="center">
-                    <FrameLayout android:layout_width="48dp" android:layout_height="48dp" android:background="#FFF3E0"><ImageView android:layout_width="28dp" android:layout_height="28dp" android:src="@android:drawable/ic_menu_camera" android:tint="#F5A623" android:layout_gravity="center" /></FrameLayout>
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Agregar foto" android:textColor="#AAAAAA" android:textSize="11sp" android:layout_marginTop="6dp" />
-                </LinearLayout>
-                <ImageView android:id="@+id/btn_remove_3" android:layout_width="22dp" android:layout_height="22dp" android:layout_gravity="top|end" android:layout_margin="4dp" android:src="@android:drawable/ic_menu_close_clear_cancel" android:tint="#FFFFFF" android:background="#88000000" android:visibility="gone" android:padding="3dp" />
-            </FrameLayout>
+            </LinearLayout>
 
-            <FrameLayout android:id="@+id/frame_foto_4" android:layout_width="0dp" android:layout_height="110dp" android:layout_columnWeight="1" android:layout_rowWeight="1" android:layout_margin="5dp" android:background="#F5F5F5" android:foreground="?attr/selectableItemBackground">
-                <ImageView android:id="@+id/iv_foto_4" android:layout_width="match_parent" android:layout_height="match_parent" android:scaleType="centerCrop" android:visibility="gone" />
-                <LinearLayout android:id="@+id/placeholder_4" android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical" android:gravity="center">
-                    <FrameLayout android:layout_width="48dp" android:layout_height="48dp" android:background="#FFF3E0"><ImageView android:layout_width="28dp" android:layout_height="28dp" android:src="@android:drawable/ic_menu_camera" android:tint="#F5A623" android:layout_gravity="center" /></FrameLayout>
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Agregar foto" android:textColor="#AAAAAA" android:textSize="11sp" android:layout_marginTop="6dp" />
-                </LinearLayout>
-                <ImageView android:id="@+id/btn_remove_4" android:layout_width="22dp" android:layout_height="22dp" android:layout_gravity="top|end" android:layout_margin="4dp" android:src="@android:drawable/ic_menu_close_clear_cancel" android:tint="#FFFFFF" android:background="#88000000" android:visibility="gone" android:padding="3dp" />
-            </FrameLayout>
-
-        </GridLayout>
-
-        <!-- Botón publicar -->
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_publicar"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:text="PUBLICAR PROPIEDAD"
-            android:textColor="#FFFFFF"
-            android:textStyle="bold"
-            android:textSize="15sp"
-            app:backgroundTint="#F5A623"
-            app:icon="@android:drawable/ic_menu_send"
-            app:iconTint="#FFFFFF"
-            app:iconGravity="start"
-            app:cornerRadius="14dp" />
+        </androidx.cardview.widget.CardView>
 
     </LinearLayout>
 
