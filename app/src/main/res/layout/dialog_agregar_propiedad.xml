@@ -44,14 +44,14 @@
                 android:layout_width="36dp"
                 android:layout_height="36dp"
                 android:src="@android:drawable/ic_menu_close_clear_cancel"
-                android:tint="#F5A623"
                 android:background="#FFF3E0"
                 android:padding="8dp"
-                android:contentDescription="Cerrar" />
+                android:contentDescription="Cerrar"
+                app:tint="#F5A623" />
 
         </LinearLayout>
 
-        <!-- CARD 1: Info básica -->
+        <!-- CARD 1 -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -74,24 +74,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="12dp"
-                    app:hintEnabled="true"
-                    app:hintAnimationEnabled="false"
-                    app:hintTextColor="#999999"
-                    app:boxStrokeColor="#F5A623"
-                    app:boxStrokeWidthFocused="2dp"
-                    app:boxStrokeWidth="1dp"
-                    app:boxCornerRadiusTopStart="8dp"
-                    app:boxCornerRadiusTopEnd="8dp"
-                    app:boxCornerRadiusBottomStart="8dp"
-                    app:boxCornerRadiusBottomEnd="8dp">
+                    app:boxStrokeColor="#F5A623">
 
                     <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_nombre"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Nombre de la propiedad *"
-                        android:textColor="#1A1A1A"
-                        android:textColorHint="#999999"
-                        android:inputType="textCapSentences" />
+                        android:hint="Nombre de la propiedad *" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -101,36 +90,24 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="12dp"
-                    app:hintEnabled="true"
-                    app:hintAnimationEnabled="false"
-                    app:hintTextColor="#999999"
-                    app:boxStrokeColor="#F5A623"
-                    app:boxStrokeWidthFocused="2dp"
-                    app:boxStrokeWidth="1dp"
-                    app:boxCornerRadiusTopStart="8dp"
-                    app:boxCornerRadiusTopEnd="8dp"
-                    app:boxCornerRadiusBottomStart="8dp"
-                    app:boxCornerRadiusBottomEnd="8dp">
+                    app:boxStrokeColor="#F5A623">
 
                     <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_descripcion"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Descripción (opcional)"
-                        android:textColor="#1A1A1A"
-                        android:textColorHint="#999999"
-                        android:inputType="textMultiLine|textCapSentences"
-                        android:minLines="2"
-                        android:maxLines="4" />
+                        android:hint="Descripción"
+                        android:minLines="2" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
                     android:text="Tipo de operación"
                     android:textColor="#555555"
-                    android:textSize="12sp" />
+                    android:textSize="12sp"
+                    android:layout_marginBottom="8dp" />
 
                 <com.google.android.material.button.MaterialButtonToggleGroup
                     android:id="@+id/toggle_tipo"
@@ -146,10 +123,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="VENTA"
-                        android:textColor="#F5A623"
-                        app:strokeColor="#F5A623"
-                        app:cornerRadius="8dp" />
+                        android:text="VENTA" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btn_renta"
@@ -157,10 +131,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="RENTA"
-                        android:textColor="#F5A623"
-                        app:strokeColor="#F5A623"
-                        app:cornerRadius="8dp" />
+                        android:text="RENTA" />
 
                 </com.google.android.material.button.MaterialButtonToggleGroup>
 
@@ -170,23 +141,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:prefixText="$"
-                    app:hintEnabled="true"
-                    app:hintAnimationEnabled="false"
-                    app:hintTextColor="#999999"
-                    app:boxStrokeColor="#F5A623"
-                    app:boxStrokeWidthFocused="2dp"
-                    app:boxStrokeWidth="1dp"
-                    app:boxCornerRadiusTopStart="8dp"
-                    app:boxCornerRadiusTopEnd="8dp"
-                    app:boxCornerRadiusBottomStart="8dp"
-                    app:boxCornerRadiusBottomEnd="8dp">
+                    app:boxStrokeColor="#F5A623">
 
                     <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_precio"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="Precio (MXN) *"
-                        android:textColor="#1A1A1A"
-                        android:textColorHint="#999999"
                         android:inputType="numberDecimal" />
 
                 </com.google.android.material.textfield.TextInputLayout>
@@ -195,7 +156,7 @@
 
         </androidx.cardview.widget.CardView>
 
-        <!-- CARD 2: Dirección -->
+        <!-- CARD 2 -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -216,8 +177,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Dirección"
-                    android:textColor="#1A1A1A"
-                    android:textSize="14sp"
                     android:textStyle="bold"
                     android:layout_marginBottom="12dp" />
 
@@ -225,26 +184,13 @@
                     android:id="@+id/til_calle"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    app:hintEnabled="true"
-                    app:hintAnimationEnabled="false"
-                    app:hintTextColor="#999999"
-                    app:boxStrokeColor="#F5A623"
-                    app:boxStrokeWidthFocused="2dp"
-                    app:boxStrokeWidth="1dp"
-                    app:boxCornerRadiusTopStart="8dp"
-                    app:boxCornerRadiusTopEnd="8dp"
-                    app:boxCornerRadiusBottomStart="8dp"
-                    app:boxCornerRadiusBottomEnd="8dp">
+                    android:layout_height="wrap_content">
 
                     <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_calle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Calle *"
-                        android:textColor="#1A1A1A"
-                        android:textColorHint="#999999"
-                        android:inputType="textCapWords" />
+                        android:hint="Calle *" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -252,7 +198,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:layout_marginBottom="10dp">
+                    android:layout_marginTop="10dp">
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/til_numero_ext"
@@ -260,25 +206,13 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:layout_marginEnd="6dp"
-                        app:hintEnabled="true"
-                        app:hintAnimationEnabled="false"
-                        app:hintTextColor="#999999"
-                        app:boxStrokeColor="#F5A623"
-                        app:boxStrokeWidthFocused="2dp"
-                        app:boxStrokeWidth="1dp"
-                        app:boxCornerRadiusTopStart="8dp"
-                        app:boxCornerRadiusTopEnd="8dp"
-                        app:boxCornerRadiusBottomStart="8dp"
-                        app:boxCornerRadiusBottomEnd="8dp">
+                        android:layout_marginEnd="6dp">
 
                         <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/et_numero_ext"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Núm. Ext *"
-                            android:textColor="#1A1A1A"
-                            android:textColorHint="#999999"
-                            android:inputType="text" />
+                            android:hint="Núm. Ext *" />
 
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -288,25 +222,13 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:layout_marginStart="6dp"
-                        app:hintEnabled="true"
-                        app:hintAnimationEnabled="false"
-                        app:hintTextColor="#999999"
-                        app:boxStrokeColor="#F5A623"
-                        app:boxStrokeWidthFocused="2dp"
-                        app:boxStrokeWidth="1dp"
-                        app:boxCornerRadiusTopStart="8dp"
-                        app:boxCornerRadiusTopEnd="8dp"
-                        app:boxCornerRadiusBottomStart="8dp"
-                        app:boxCornerRadiusBottomEnd="8dp">
+                        android:layout_marginStart="6dp">
 
                         <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/et_numero_int"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Núm. Int"
-                            android:textColor="#1A1A1A"
-                            android:textColorHint="#999999"
-                            android:inputType="text" />
+                            android:hint="Núm. Int" />
 
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -317,25 +239,13 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    app:hintEnabled="true"
-                    app:hintAnimationEnabled="false"
-                    app:hintTextColor="#999999"
-                    app:boxStrokeColor="#F5A623"
-                    app:boxStrokeWidthFocused="2dp"
-                    app:boxStrokeWidth="1dp"
-                    app:boxCornerRadiusTopStart="8dp"
-                    app:boxCornerRadiusTopEnd="8dp"
-                    app:boxCornerRadiusBottomStart="8dp"
-                    app:boxCornerRadiusBottomEnd="8dp">
+                    android:layout_marginTop="10dp">
 
                     <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_colonia"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Colonia"
-                        android:textColor="#1A1A1A"
-                        android:textColorHint="#999999"
-                        android:inputType="textCapWords" />
+                        android:hint="Colonia" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -343,7 +253,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:layout_marginBottom="10dp">
+                    android:layout_marginTop="10dp">
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/til_cp"
@@ -351,26 +261,13 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:layout_marginEnd="6dp"
-                        app:hintEnabled="true"
-                        app:hintAnimationEnabled="false"
-                        app:hintTextColor="#999999"
-                        app:boxStrokeColor="#F5A623"
-                        app:boxStrokeWidthFocused="2dp"
-                        app:boxStrokeWidth="1dp"
-                        app:boxCornerRadiusTopStart="8dp"
-                        app:boxCornerRadiusTopEnd="8dp"
-                        app:boxCornerRadiusBottomStart="8dp"
-                        app:boxCornerRadiusBottomEnd="8dp">
+                        android:layout_marginEnd="6dp">
 
                         <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/et_cp"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="C.P."
-                            android:textColor="#1A1A1A"
-                            android:textColorHint="#999999"
-                            android:inputType="number"
-                            android:maxLength="5" />
+                            android:hint="C.P." />
 
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -380,82 +277,43 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
-                        android:layout_marginStart="6dp"
-                        app:hintEnabled="true"
-                        app:hintAnimationEnabled="false"
-                        app:hintTextColor="#999999"
-                        app:boxStrokeColor="#F5A623"
-                        app:boxStrokeWidthFocused="2dp"
-                        app:boxStrokeWidth="1dp"
-                        app:boxCornerRadiusTopStart="8dp"
-                        app:boxCornerRadiusTopEnd="8dp"
-                        app:boxCornerRadiusBottomStart="8dp"
-                        app:boxCornerRadiusBottomEnd="8dp">
+                        android:layout_marginStart="6dp">
 
                         <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/et_estado"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Estado"
-                            android:textColor="#1A1A1A"
-                            android:textColorHint="#999999"
-                            android:inputType="textCapWords" />
+                            android:hint="Estado" />
 
                     </com.google.android.material.textfield.TextInputLayout>
 
                 </LinearLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    app:hintEnabled="true"
-                    app:hintAnimationEnabled="false"
-                    app:hintTextColor="#999999"
-                    app:boxStrokeColor="#F5A623"
-                    app:boxStrokeWidthFocused="2dp"
-                    app:boxStrokeWidth="1dp"
-                    app:boxCornerRadiusTopStart="8dp"
-                    app:boxCornerRadiusTopEnd="8dp"
-                    app:boxCornerRadiusBottomStart="8dp"
-                    app:boxCornerRadiusBottomEnd="8dp">
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                    android:layout_marginTop="10dp">
 
                     <AutoCompleteTextView
                         android:id="@+id/et_ciudad"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Ciudad *"
-                        android:completionThreshold="1"
-                        android:textColor="#1A1A1A"
-                        android:textColorHint="#999999"
-                        android:inputType="textCapWords" />
+                        android:hint="Ciudad *" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:hintEnabled="true"
-                    app:hintAnimationEnabled="false"
-                    app:hintTextColor="#999999"
-                    app:boxStrokeColor="#F5A623"
-                    app:boxStrokeWidthFocused="2dp"
-                    app:boxStrokeWidth="1dp"
-                    app:boxCornerRadiusTopStart="8dp"
-                    app:boxCornerRadiusTopEnd="8dp"
-                    app:boxCornerRadiusBottomStart="8dp"
-                    app:boxCornerRadiusBottomEnd="8dp">
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                    android:layout_marginTop="10dp">
 
                     <AutoCompleteTextView
                         android:id="@+id/et_pais"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="País"
-                        android:completionThreshold="1"
-                        android:textColor="#1A1A1A"
-                        android:textColorHint="#999999"
-                        android:inputType="textCapWords" />
+                        android:hint="País" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -463,16 +321,12 @@
 
         </androidx.cardview.widget.CardView>
 
-        <!-- CARD 3: Fotos -->
+        <!-- CARD FOTOS -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="12dp"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="4dp"
-            app:cardBackgroundColor="#FFFFFF">
+            android:layout_margin="16dp"
+            app:cardCornerRadius="16dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -483,26 +337,23 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Fotos (opcional)"
-                    android:textColor="#1A1A1A"
-                    android:textSize="14sp"
+                    android:text="Fotos"
                     android:textStyle="bold"
                     android:layout_marginBottom="12dp" />
 
-                <LinearLayout
+                <GridLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="8dp">
+                    android:columnCount="2">
 
+                    <!-- FOTO 1 -->
                     <FrameLayout
                         android:id="@+id/frame_foto_1"
                         android:layout_width="0dp"
-                        android:layout_height="100dp"
-                        android:layout_weight="1"
-                        android:layout_marginEnd="4dp"
-                        android:background="@drawable/bg_photo_slot"
-                        android:clipChildren="true">
+                        android:layout_height="120dp"
+                        android:layout_columnWeight="1"
+                        android:layout_margin="4dp"
+                        android:background="#EEEEEE">
 
                         <ImageView
                             android:id="@+id/iv_foto_1"
@@ -515,48 +366,33 @@
                             android:id="@+id/placeholder_1"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:orientation="vertical"
-                            android:gravity="center">
-
-                            <ImageView
-                                android:layout_width="28dp"
-                                android:layout_height="28dp"
-                                android:src="@android:drawable/ic_menu_camera"
-                                android:tint="#CCCCCC" />
+                            android:gravity="center"
+                            android:orientation="vertical">
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Foto 1"
-                                android:textColor="#AAAAAA"
-                                android:textSize="11sp"
-                                android:layout_marginTop="4dp" />
-
+                                android:text="Foto 1" />
                         </LinearLayout>
 
                         <ImageView
                             android:id="@+id/btn_remove_1"
                             android:layout_width="24dp"
                             android:layout_height="24dp"
-                            android:src="@android:drawable/ic_menu_close_clear_cancel"
-                            android:tint="#FFFFFF"
-                            android:background="@drawable/bg_remove_btn"
-                            android:padding="4dp"
                             android:layout_gravity="top|end"
-                            android:layout_margin="4dp"
-                            android:visibility="gone"
-                            android:contentDescription="Quitar foto 1" />
+                            android:src="@android:drawable/ic_menu_close_clear_cancel"
+                            android:visibility="gone" />
 
                     </FrameLayout>
 
+                    <!-- FOTO 2 -->
                     <FrameLayout
                         android:id="@+id/frame_foto_2"
                         android:layout_width="0dp"
-                        android:layout_height="100dp"
-                        android:layout_weight="1"
-                        android:layout_marginStart="4dp"
-                        android:background="@drawable/bg_photo_slot"
-                        android:clipChildren="true">
+                        android:layout_height="120dp"
+                        android:layout_columnWeight="1"
+                        android:layout_margin="4dp"
+                        android:background="#EEEEEE">
 
                         <ImageView
                             android:id="@+id/iv_foto_2"
@@ -569,55 +405,33 @@
                             android:id="@+id/placeholder_2"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:orientation="vertical"
-                            android:gravity="center">
-
-                            <ImageView
-                                android:layout_width="28dp"
-                                android:layout_height="28dp"
-                                android:src="@android:drawable/ic_menu_camera"
-                                android:tint="#CCCCCC" />
+                            android:gravity="center"
+                            android:orientation="vertical">
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Foto 2"
-                                android:textColor="#AAAAAA"
-                                android:textSize="11sp"
-                                android:layout_marginTop="4dp" />
-
+                                android:text="Foto 2" />
                         </LinearLayout>
 
                         <ImageView
                             android:id="@+id/btn_remove_2"
                             android:layout_width="24dp"
                             android:layout_height="24dp"
-                            android:src="@android:drawable/ic_menu_close_clear_cancel"
-                            android:tint="#FFFFFF"
-                            android:background="@drawable/bg_remove_btn"
-                            android:padding="4dp"
                             android:layout_gravity="top|end"
-                            android:layout_margin="4dp"
-                            android:visibility="gone"
-                            android:contentDescription="Quitar foto 2" />
+                            android:src="@android:drawable/ic_menu_close_clear_cancel"
+                            android:visibility="gone" />
 
                     </FrameLayout>
 
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
+                    <!-- FOTO 3 -->
                     <FrameLayout
                         android:id="@+id/frame_foto_3"
                         android:layout_width="0dp"
-                        android:layout_height="100dp"
-                        android:layout_weight="1"
-                        android:layout_marginEnd="4dp"
-                        android:background="@drawable/bg_photo_slot"
-                        android:clipChildren="true">
+                        android:layout_height="120dp"
+                        android:layout_columnWeight="1"
+                        android:layout_margin="4dp"
+                        android:background="#EEEEEE">
 
                         <ImageView
                             android:id="@+id/iv_foto_3"
@@ -630,48 +444,33 @@
                             android:id="@+id/placeholder_3"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:orientation="vertical"
-                            android:gravity="center">
-
-                            <ImageView
-                                android:layout_width="28dp"
-                                android:layout_height="28dp"
-                                android:src="@android:drawable/ic_menu_camera"
-                                android:tint="#CCCCCC" />
+                            android:gravity="center"
+                            android:orientation="vertical">
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Foto 3"
-                                android:textColor="#AAAAAA"
-                                android:textSize="11sp"
-                                android:layout_marginTop="4dp" />
-
+                                android:text="Foto 3" />
                         </LinearLayout>
 
                         <ImageView
                             android:id="@+id/btn_remove_3"
                             android:layout_width="24dp"
                             android:layout_height="24dp"
-                            android:src="@android:drawable/ic_menu_close_clear_cancel"
-                            android:tint="#FFFFFF"
-                            android:background="@drawable/bg_remove_btn"
-                            android:padding="4dp"
                             android:layout_gravity="top|end"
-                            android:layout_margin="4dp"
-                            android:visibility="gone"
-                            android:contentDescription="Quitar foto 3" />
+                            android:src="@android:drawable/ic_menu_close_clear_cancel"
+                            android:visibility="gone" />
 
                     </FrameLayout>
 
+                    <!-- FOTO 4 -->
                     <FrameLayout
                         android:id="@+id/frame_foto_4"
                         android:layout_width="0dp"
-                        android:layout_height="100dp"
-                        android:layout_weight="1"
-                        android:layout_marginStart="4dp"
-                        android:background="@drawable/bg_photo_slot"
-                        android:clipChildren="true">
+                        android:layout_height="120dp"
+                        android:layout_columnWeight="1"
+                        android:layout_margin="4dp"
+                        android:background="#EEEEEE">
 
                         <ImageView
                             android:id="@+id/iv_foto_4"
@@ -684,41 +483,26 @@
                             android:id="@+id/placeholder_4"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:orientation="vertical"
-                            android:gravity="center">
-
-                            <ImageView
-                                android:layout_width="28dp"
-                                android:layout_height="28dp"
-                                android:src="@android:drawable/ic_menu_camera"
-                                android:tint="#CCCCCC" />
+                            android:gravity="center"
+                            android:orientation="vertical">
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Foto 4"
-                                android:textColor="#AAAAAA"
-                                android:textSize="11sp"
-                                android:layout_marginTop="4dp" />
-
+                                android:text="Foto 4" />
                         </LinearLayout>
 
                         <ImageView
                             android:id="@+id/btn_remove_4"
                             android:layout_width="24dp"
                             android:layout_height="24dp"
-                            android:src="@android:drawable/ic_menu_close_clear_cancel"
-                            android:tint="#FFFFFF"
-                            android:background="@drawable/bg_remove_btn"
-                            android:padding="4dp"
                             android:layout_gravity="top|end"
-                            android:layout_margin="4dp"
-                            android:visibility="gone"
-                            android:contentDescription="Quitar foto 4" />
+                            android:src="@android:drawable/ic_menu_close_clear_cancel"
+                            android:visibility="gone" />
 
                     </FrameLayout>
 
-                </LinearLayout>
+                </GridLayout>
 
             </LinearLayout>
 
@@ -730,15 +514,8 @@
             android:layout_height="52dp"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
-            android:layout_marginTop="4dp"
             android:text="PUBLICAR PROPIEDAD"
-            android:textAllCaps="true"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:textColor="#FFFFFF"
-            app:backgroundTint="#F5A623"
-            app:cornerRadius="14dp"
-            app:elevation="0dp" />
+            app:backgroundTint="#F5A623" />
 
     </LinearLayout>
 
